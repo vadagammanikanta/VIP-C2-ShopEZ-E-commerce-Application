@@ -18,7 +18,7 @@ graph TD
     end
 
     %% Network Layer
-    Axios -->|HTTP REST API (JSON / HTTPS)| ExpressRouter
+    Axios -->|HTTP REST API - JSON and HTTPS| ExpressRouter
 
     %% Backend Layer
     subgraph Server ["Server (Backend - Node.js)"]
