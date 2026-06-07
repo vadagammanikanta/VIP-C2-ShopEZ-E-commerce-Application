@@ -38,29 +38,73 @@ You can log in and test the application features using these pre-seeded accounts
 
 ---
 
-## 🚀 How to Create a Demo Link
+## 📋 Project Subtasks Implementation Matrix
 
-### Option A: Share Your Local App Instantly (Local Tunnel)
-If you are running the app locally and want to generate a quick, temporary link to show others:
-1. Make sure your React app is running locally on port `5173` (`npm run dev`).
-2. Open a new terminal and run:
-   ```bash
-   npx localtunnel --port 5173
-   ```
-3. This will output a public URL (e.g., `https://xxxx.localtunnel.me`) that anyone can open in their browser to view your app.
+Here is how each milestone card from your project portal is implemented in this repository:
 
-*(Note: If your backend runs on port `8000`, you would also need to expose port `8000` via localtunnel and update the `VITE_API_URL` environment variable to point to that backend tunnel URL).*
+### 📁 1. Project Architecture
+*   **ER Diagram** ➔ Documented with Mongoose schema structures in [er_diagram.md](docs/er_diagram.md) ([file:// Link](file:///d:/PROJECTS/E-commerce%20Application/docs/er_diagram.md)).
+*   **Features** ➔ Full specification of guest, customer, and admin capabilities in [features.md](docs/features.md) ([file:// Link](file:///d:/PROJECTS/E-commerce%20Application/docs/features.md)).
+*   **Roles & Responsibilities** ➔ RBAC middleware checks and permissions matrix outlined in [roles_responsibilities.md](docs/roles_responsibilities.md) ([file:// Link](file:///d:/PROJECTS/E-commerce%20Application/docs/roles_responsibilities.md)).
+*   **User Flow** ➔ Checkout, stock validation, and payment API sequence mapped in [user_flow.md](docs/user_flow.md) ([file:// Link](file:///d:/PROJECTS/E-commerce%20Application/docs/user_flow.md)).
+*   **MVC Pattern** ➔ Description of client-server decoupling into Model-View-Controller in [mvc_pattern.md](docs/mvc_pattern.md) ([file:// Link](file:///d:/PROJECTS/E-commerce%20Application/docs/mvc_pattern.md)).
+
+### ⚙️ 2. Project Setup & Configuration
+*   **Creating Project Folder** ➔ Initialized decoupled [client/](client) and [server/](server) workspaces.
+*   **Client Setup** ➔ Scaffolded Vite-React client, installed Router, Axios, and Lucide libraries, and configured global styles resets.
+*   **Server Setup** ➔ Initialized package config dependencies, Express server, and Nodemon hot-reload configurations.
+
+### 💻 3. Backend Development
+*   **Backend Structure** ➔ Created controllers ([controllers/](server/controllers)), routes ([routes/](server/routes)), schemas/models ([models/](server/models)), and auth middleware ([middleware/](server/middleware)).
+*   **Development and Execution** ➔ Built REST endpoints for user authentication, product listings, and order tracking. Hosted on Render: [https://shopez-api-c30e.onrender.com](https://shopez-api-c30e.onrender.com).
+
+### 🗄️ 4. Database Development
+*   **Configure MongoDB** ➔ Configured connection string in [server/.env](server/.env) targeting your remote **MongoDB Atlas cloud database cluster**.
+*   **Create Database Collections** ➔ Collections created for `users`, `products`, `orders`, and `carts`.
+*   **Create Schema and Models** ➔ Implemented in [Schema.js](server/Schema.js) using ES6 schemas syntax.
+
+### 🎨 5. Frontend Development
+*   **Frontend Structure** ➔ Divided into auth state layers ([AuthContext.jsx](client/src/context/AuthContext.jsx)), cart context ([CartContext.jsx](client/src/context/CartContext.jsx)), components ([components/](client/src/components)), and router page pathways.
+*   **Development and Execution** ➔ Designed layout views (Home catalog, searching, categories filters, product details, sizes selectors, shipping totals) and the dark-themed Admin Dashboard ([AdminDashboard.jsx](client/src/pages/AdminDashboard.jsx)). Hosted on Vercel: [https://e-commerce-application-neon-five.vercel.app/](https://e-commerce-application-neon-five.vercel.app/).
+
+### 🚀 6. Project Execution
+*   **Steps For Execution** ➔ Detailed run guides outlined below.
+*   **Demo Screenshots** ➔ Captured 6 UI screenshots inside the [/screenshots](screenshots) directory and documented in [walkthrough.md](walkthrough.md).
+*   **Drive Links (Deployed URLs)** ➔ Deployed links mapped directly under the [Live Demo](#-live-demo) section.
 
 ---
 
-### Option B: Deploy Publicly (Permanent Link)
-For a permanent live link, deploy the MERN stack application to the cloud:
+## 🚀 How to Run Locally (Steps for Execution)
 
-1. **Database**: Create a free database cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and get your connection string.
-2. **Backend Server**: Deploy the `server` folder to [Render](https://render.com/) or [Railway](https://railway.app/).
-   - Add your environment variable `MONGO_URI` (pointing to MongoDB Atlas).
-   - Set start command to `npm start`.
-3. **Frontend Client**: Deploy the `client` folder to [Vercel](https://vercel.com/) or [Netlify](https://www.netlify.com/).
-   - Set build command to `npm run build`.
-   - Set output directory to `dist`.
-   - Add environment variable `VITE_API_URL` pointing to your deployed backend URL.
+Follow these steps to run both the server and client locally:
+
+### 1. Configure Environmental Variables
+Inside the `server` folder, create a `.env` file (which is git-ignored) and add:
+```env
+PORT=8000
+MONGO_URI=mongodb+srv://myAtlasDBUser:8oS9VguGPNblp34x@ac-tidroey-shard-00-00.mj29o7m.mongodb.net:27017,ac-tidroey-shard-00-01.mj29o7m.mongodb.net:27017,ac-tidroey-shard-00-02.mj29o7m.mongodb.net:27017/shopez?ssl=true&replicaSet=atlas-qop2mc-shard-0&authSource=admin
+JWT_SECRET=shopez_secret_key_998877
+```
+
+### 2. Start Backend API Server
+```bash
+cd server
+npm install
+npm run dev
+```
+*(The server will start running on http://localhost:8000)*
+
+### 3. Seed Mock Products & Admin Profile
+```bash
+cd server
+npm run seed
+```
+
+### 4. Start Frontend Client App
+```bash
+cd client
+npm install
+npm run dev
+```
+*(The React app will open on http://localhost:5173)*
+
