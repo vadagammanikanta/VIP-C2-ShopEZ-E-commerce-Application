@@ -6,7 +6,7 @@ import { CartContext } from '../context/CartContext';
 const ProductCard = ({ product }) => {
   const { addToCart } = useContext(CartContext);
 
-  const imageUrl = product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60';
+  const imageUrl = product.mainImg || product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60';
 
   const handleQuickAdd = (e) => {
     e.preventDefault();
@@ -18,12 +18,12 @@ const ProductCard = ({ product }) => {
       <Link to={`/products/${product._id}`}>
         <img
           src={imageUrl}
-          alt={product.name}
+          alt={product.title || product.name}
           className="card-img"
           loading="lazy"
         />
         <div className="card-category">{product.category}</div>
-        <h3 className="card-title">{product.name}</h3>
+        <h3 className="card-title">{product.title || product.name}</h3>
       </Link>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '8px' }}>

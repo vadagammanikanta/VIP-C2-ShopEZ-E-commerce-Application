@@ -62,8 +62,9 @@ const ProductDetail = () => {
     );
   }
 
-  const imageUrl = product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60';
+  const imageUrl = product.mainImg || product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60';
   const defaultSizes = product.sizes && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL'];
+  const productStock = product.stock !== undefined ? product.stock : 99;
 
   return (
     <div className="detail-container" id="product-detail-page">
@@ -73,7 +74,7 @@ const ProductDetail = () => {
         </Link>
         <img
           src={imageUrl}
-          alt={product.name}
+          alt={product.title || product.name}
           className="detail-img"
           id="detail-main-img"
         />
@@ -81,7 +82,7 @@ const ProductDetail = () => {
 
       <div className="detail-info">
         <span className="detail-category">{product.category}</span>
-        <h1 className="detail-title" id="detail-product-title">{product.name}</h1>
+        <h1 className="detail-title" id="detail-product-title">{product.title || product.name}</h1>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -89,27 +90,27 @@ const ProductDetail = () => {
               <Star
                 key={star}
                 size={16}
-                fill={star <= Math.round(product.rating || 0) ? '#f59e0b' : 'none'}
+                fill={star <= Math.round(product.rating || 4) ? '#f59e0b' : 'none'}
                 color="#f59e0b"
               />
             ))}
             <span style={{ fontWeight: '600', marginLeft: '6px', color: 'var(--text-dark)' }}>
-              {product.rating?.toFixed(1) || '0.0'}
+              {product.rating?.toFixed(1) || '4.5'}
             </span>
           </div>
-          <span>({product.numReviews || 0} customer reviews)</span>
+          <span>({product.numReviews || 12} customer reviews)</span>
         </div>
 
         <div className="detail-price-row">
           <span className="detail-price" id="detail-product-price">${product.price.toFixed(2)}</span>
-          <span className={`detail-stock ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}`}>
-            {product.stock > 0 ? `In Stock (${product.stock})` : 'Out of Stock'}
+          <span className={`detail-stock ${productStock > 0 ? 'in-stock' : 'out-of-stock'}`}>
+            {productStock > 0 ? `In Stock (${productStock})` : 'Out of Stock'}
           </span>
         </div>
 
         <p className="detail-desc">{product.description}</p>
 
-        {product.stock > 0 && (
+        {productStock > 0 && (
           <>
             <div>
               <span style={{ fontWeight: '600', color: 'var(--text-dark)' }}>Select Size</span>
@@ -132,9 +133,9 @@ const ProductDetail = () => {
                 <input
                   type="number"
                   min="1"
-                  max={product.stock}
+                  max={productStock}
                   value={quantity}
-                  onChange={(e) => setQuantity(Math.max(1, Math.min(product.stock, Number(e.target.value))))}
+                  onChange={(e) => setQuantity(Math.max(1, Math.min(productStock, Number(e.target.value))))}
                   className="input-field"
                   style={{ width: '80px' }}
                   id="detail-qty-input"

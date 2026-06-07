@@ -120,13 +120,13 @@ const Cart = () => {
           {cartItems.map((item) => (
             <div key={`${item.product}-${item.size}`} className="cart-item-row" id={`cart-item-${item.product}`}>
               <img
-                src={item.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60'}
-                alt={item.name}
+                src={item.mainImg || item.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60'}
+                alt={item.title || item.name}
                 className="cart-item-img"
               />
               <div className="cart-item-info">
                 <Link to={`/products/${item.product}`} className="cart-item-title">
-                  {item.name}
+                  {item.title || item.name}
                 </Link>
                 <div className="cart-item-meta">
                   Size: <strong>{item.size || 'M'}</strong> | Price: <strong>${item.price.toFixed(2)}</strong>
@@ -136,7 +136,7 @@ const Cart = () => {
                 <input
                   type="number"
                   min="1"
-                  max={item.stock}
+                  max={item.stock !== undefined ? item.stock : 99}
                   value={item.quantity}
                   onChange={(e) => updateQuantity(item.product, Number(e.target.value), item.size)}
                   className="input-field"
