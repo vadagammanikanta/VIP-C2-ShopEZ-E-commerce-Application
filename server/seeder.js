@@ -17,70 +17,70 @@ const Product = mongoose.model('products', productSchema);
 
 const sampleProducts = [
   {
-    title: "Wireless Over-Ear Headphones",
-    description: "High-fidelity wireless noise-cancelling headphones with comfortable memory foam ear cups and 30-hour battery life.",
-    mainImg: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80",
-    carousel: ["https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80"],
-    sizes: ["Standard"],
-    category: "Electronics",
+    title: "Iphone 12",
+    description: "Apple Iphone with 8GB ram and 128GB internal storage. Features advanced dual-camera system and A14 Bionic chip.",
+    mainImg: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&q=80",
+    carousel: ["https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&q=80"],
+    sizes: ["128GB", "256GB"],
+    category: "mobiles",
     gender: "Unisex",
-    price: 199.99,
+    price: 79999,
     discount: 15
   },
   {
-    title: "Waterproof Sports Smartwatch",
-    description: "Track your workouts, heart rate, sleep metrics, and sync notifications with this elegant waterproof smartwatch.",
-    mainImg: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
-    carousel: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80"],
+    title: "Realme buds",
+    description: "TWS buds with 10.2mm drivers offering deep bass boost and 28 hours total playback time.",
+    mainImg: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80",
+    carousel: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80"],
     sizes: ["Standard"],
     category: "Electronics",
     gender: "Unisex",
-    price: 129.99,
-    discount: 5
+    price: 3999,
+    discount: 35
   },
   {
-    title: "Premium Cotton Hoodie",
-    description: "Ultra-soft cotton blend fleece hoodie with adjustable double-lined hood and spacious front pouch pocket.",
-    mainImg: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&q=80",
-    carousel: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&q=80"],
-    sizes: ["S", "M", "L", "XL"],
-    category: "Clothing",
+    title: "MRF cricket bat",
+    description: "Popular willow wood cricket bat from MRF. Suitable for all format plays in all conditions.",
+    mainImg: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80",
+    carousel: ["https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80"],
+    sizes: ["Full Size"],
+    category: "Sports-Equipment",
     gender: "Unisex",
-    price: 49.99,
+    price: 1699,
+    discount: 23
+  },
+  {
+    title: "Carrom board",
+    description: "Quality carrom board along with necessary equipment to make your free time more joyful. Includes coins and striker.",
+    mainImg: "https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80",
+    carousel: ["https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80"],
+    sizes: ["Large"],
+    category: "Sports-Equipment",
+    gender: "Unisex",
+    price: 1838,
     discount: 0
   },
   {
-    title: "Classic Denim Jacket",
-    description: "A timeless button-front denim jacket styled from heavy-duty rigid cotton denim.",
-    mainImg: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600&q=80",
-    carousel: ["https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=600&q=80"],
-    sizes: ["M", "L", "XL"],
-    category: "Clothing",
+    title: "Unisex Cotton Hoodie",
+    description: "Ultra-soft cotton blend fleece hoodie with adjustable drawstrings and spacious pockets.",
+    mainImg: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&q=80",
+    carousel: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&q=80"],
+    sizes: ["S", "M", "L", "XL"],
+    category: "Fashion",
     gender: "Unisex",
-    price: 69.99,
-    discount: 20
-  },
-  {
-    title: "Minimalist Leather Sneakers",
-    description: "Handcrafted premium leather sneakers featuring padded collars and solid flat rubber soles.",
-    mainImg: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80",
-    carousel: ["https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80"],
-    sizes: ["8", "9", "10", "11"],
-    category: "Shoes",
-    gender: "Unisex",
-    price: 89.99,
+    price: 1999,
     discount: 10
   },
   {
-    title: "Matte Ceramic Coffee Mugs (Set of 4)",
-    description: "A beautiful set of 4 minimalist matte-finish ceramic coffee mugs designed for elegant modern kitchens.",
-    mainImg: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&q=80",
-    carousel: ["https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&q=80"],
+    title: "Ceramic Coffee Mug Set",
+    description: "A set of 4 minimalist matte-finish ceramic coffee mugs designed for modern kitchens.",
+    mainImg: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80",
+    carousel: ["https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80"],
     sizes: ["350ml"],
-    category: "Home & Kitchen",
+    category: "Groceries",
     gender: "Unisex",
-    price: 24.99,
-    discount: 0
+    price: 999,
+    discount: 5
   }
 ];
 
@@ -96,7 +96,7 @@ const seedDB = async () => {
 
     // Insert new products
     await Product.insertMany(sampleProducts);
-    console.log('Successfully seeded database with products!');
+    console.log('Successfully seeded database with specific products!');
 
     process.exit(0);
   } catch (error) {

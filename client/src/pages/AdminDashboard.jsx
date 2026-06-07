@@ -1,394 +1,763 @@
-import { useEffect, useState } from 'react';
-import { Plus, Edit, Trash2, Clipboard, Package, Check, X } from 'lucide-react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('products'); // 'products' | 'orders'
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // Admin sub-view tab: 'dashboard' | 'users' | 'orders' | 'products' | 'new-product'
+  const [activeTab, setActiveTab] = useState('dashboard');
+
+  // Database stats
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Modal states for creating/editing product
-  const [modalOpen, setModalOpen] = useState(false);
+  // Form states for creating/editing product
   const [editingProduct, setEditingProduct] = useState(null);
-  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState(0);
+  const [mainImg, setMainImg] = useState('');
+  const [carouselImg1, setCarouselImg1] = useState('');
+  const [carouselImg2, setCarouselImg2] = useState('');
+  const [carouselImg3, setCarouselImg3] = useState('');
+  const [price, setPrice] = useState('');
+  const [discount, setDiscount] = useState('');
   const [category, setCategory] = useState('Electronics');
-  const [stock, setStock] = useState(0);
-  const [imageUrl, setImageUrl] = useState('');
+  const [gender, setGender] = useState('Unisex');
+  const [selectedSizes, setSelectedSizes] = useState(['M']);
 
-  // Dropdown options
-  const categoriesList = ['Electronics', 'Clothing', 'Shoes', 'Home & Kitchen', 'Books'];
+  // Banner state
+  const [bannerUrl, setBannerUrl] = useState('');
+  const [bannerSuccess, setBannerSuccess] = useState(false);
+
+  // Filters for All Products view
+  const [sortBy, setSortBy] = useState('Popularity');
+  const [filterCategories, setFilterCategories] = useState([]);
+  const [filterGenders, setFilterGenders] = useState([]);
+
+  // Local order status update values
+  const [selectedStatus, setSelectedStatus] = useState({});
+
+  const categoriesList = ['mobiles', 'Electronics', 'Sports-Equipment', 'Fashion', 'Groceries'];
+  const sizesList = ['S', 'M', 'L', 'XL'];
+  const gendersList = ['Men', 'Women', 'Unisex'];
   const orderStatuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
-  const fetchData = async () => {
+  const loadAllData = async () => {
     setLoading(true);
     try {
-      if (activeTab === 'products') {
-        const { data } = await axios.get('/products');
-        setProducts(data);
-      } else {
-        const { data } = await axios.get('/orders');
-        setOrders(data);
-      }
+      const [prodRes, ordRes, userRes] = await Promise.all([
+        axios.get('/products'),
+        axios.get('/orders'),
+        axios.get('/users'),
+      ]);
+      setProducts(prodRes.data);
+      setOrders(ordRes.data);
+      setUsers(userRes.data);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to load admin dashboard statistics data', err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    loadAllData();
   }, [activeTab]);
 
-  const handleOpenAddModal = () => {
+  const handleOpenAddMode = () => {
     setEditingProduct(null);
-    setName('');
+    setTitle('');
     setDescription('');
-    setPrice(0);
+    setMainImg('');
+    setCarouselImg1('');
+    setCarouselImg2('');
+    setCarouselImg3('');
+    setPrice('');
+    setDiscount('');
     setCategory('Electronics');
-    setStock(10);
-    setImageUrl('');
-    setModalOpen(true);
+    setGender('Unisex');
+    setSelectedSizes(['M']);
+    setActiveTab('new-product');
   };
 
-  const handleOpenEditModal = (product) => {
+  const handleOpenEditMode = (product) => {
     setEditingProduct(product);
-    setName(product.name);
-    setDescription(product.description);
-    setPrice(product.price);
-    setCategory(product.category);
-    setStock(product.stock);
-    setImageUrl(product.images?.[0] || '');
-    setModalOpen(true);
+    setTitle(product.title || product.name);
+    setDescription(product.description || '');
+    setMainImg(product.mainImg || product.images?.[0] || '');
+    setCarouselImg1(product.carousel?.[0] || '');
+    setCarouselImg2(product.carousel?.[1] || '');
+    setCarouselImg3(product.carousel?.[2] || '');
+    setPrice(product.price || '');
+    setDiscount(product.discount || '');
+    setCategory(product.category || 'Electronics');
+    setGender(product.gender || 'Unisex');
+    setSelectedSizes(product.sizes || []);
+    setActiveTab('new-product');
   };
 
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     try {
+      const carousel = [carouselImg1, carouselImg2, carouselImg3].filter(Boolean);
       const payload = {
-        name,
+        name: title, // maintain compatibility
+        title,
         description,
         price: Number(price),
+        discount: Number(discount || 0),
         category,
-        stock: Number(stock),
-        images: imageUrl ? [imageUrl] : []
+        gender,
+        sizes: selectedSizes,
+        mainImg,
+        images: [mainImg, ...carousel], // maintain compatibility
+        carousel,
+        stock: 99 // standard default
       };
 
       if (editingProduct) {
-        // Edit product
         await axios.put(`/products/${editingProduct._id}`, payload);
+        alert('Product details updated successfully!');
       } else {
-        // Add new product
         await axios.post('/products', payload);
+        alert('Product created successfully!');
       }
-      setModalOpen(false);
-      fetchData();
+      setActiveTab('products');
     } catch (err) {
       console.error(err);
       alert(err.response?.data?.message || 'Operation failed');
     }
   };
 
-  const handleDeleteProduct = async (id) => {
-    if (window.confirm('Are you sure you want to delete this product?')) {
-      try {
-        await axios.delete(`/products/${id}`);
-        fetchData();
-      } catch (err) {
-        console.error(err);
-        alert('Failed to delete product');
-      }
-    }
-  };
-
-  const handleUpdateOrderStatus = async (orderId, status) => {
+  const handleUpdateOrderStatus = async (orderId) => {
+    const status = selectedStatus[orderId];
+    if (!status) return;
     try {
       await axios.put(`/orders/${orderId}`, { orderStatus: status });
-      fetchData();
+      alert('Order status updated!');
+      loadAllData();
     } catch (err) {
       console.error(err);
       alert('Failed to update status');
     }
   };
 
+  const handleCancelOrder = async (orderId) => {
+    if (window.confirm('Are you sure you want to cancel this order?')) {
+      try {
+        await axios.put(`/orders/${orderId}`, { orderStatus: 'Cancelled' });
+        alert('Order cancelled!');
+        loadAllData();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to cancel order');
+      }
+    }
+  };
+
+  const handleSizeChange = (size) => {
+    setSelectedSizes((prev) =>
+      prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
+    );
+  };
+
+  const handleFilterCategoryChange = (cat) => {
+    setFilterCategories((prev) =>
+      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
+    );
+  };
+
+  const handleFilterGenderChange = (gen) => {
+    setFilterGenders((prev) =>
+      prev.includes(gen) ? prev.filter((g) => g !== gen) : [...prev, gen]
+    );
+  };
+
+  // Filter and sort products for All Products view
+  const getFilteredProducts = () => {
+    let list = [...products];
+
+    // Category filter
+    if (filterCategories.length > 0) {
+      list = list.filter((p) => filterCategories.includes(p.category));
+    }
+
+    // Gender filter
+    if (filterGenders.length > 0) {
+      list = list.filter((p) => filterGenders.includes(p.gender || 'Unisex'));
+    }
+
+    // Sorting
+    if (sortBy === 'Price (low to high)') {
+      list.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'Price (high to low)') {
+      list.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'Discount') {
+      list.sort((a, b) => (b.discount || 0) - (a.discount || 0));
+    }
+
+    return list;
+  };
+
+  const handleUpdateBanner = (e) => {
+    e.preventDefault();
+    setBannerSuccess(true);
+    setTimeout(() => setBannerSuccess(false), 3000);
+  };
+
   return (
-    <div className="dashboard-layout" id="admin-dashboard-container">
-      <header className="dashboard-header">
-        <h1>Admin Console</h1>
-        <p>Manage store catalogs inventory, review sales logs, and track order fulfillment.</p>
+    <div className="admin-page-theme" style={{ backgroundColor: '#161a22', minHeight: '100vh', color: '#ffffff' }}>
+      
+      {/* Horizontal Nav Header */}
+      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 5%', backgroundColor: '#1f2937', borderBottom: '1px solid #374151' }}>
+        <div 
+          onClick={() => setActiveTab('dashboard')} 
+          style={{ fontSize: '22px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+        >
+          ShopEZ <span style={{ fontSize: '14px', color: '#ff7a00', border: '1px solid #ff7a00', padding: '2px 6px', borderRadius: '4px' }}>(admin)</span>
+        </div>
+        <nav style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+          <button 
+            onClick={() => navigate('/')} 
+            style={{ fontWeight: '500', color: '#d1d5db', cursor: 'pointer' }}
+          >
+            Home
+          </button>
+          <button 
+            onClick={() => setActiveTab('users')} 
+            style={{ fontWeight: '500', color: activeTab === 'users' ? '#ff7a00' : '#d1d5db', cursor: 'pointer' }}
+          >
+            Users
+          </button>
+          <button 
+            onClick={() => setActiveTab('orders')} 
+            style={{ fontWeight: '500', color: activeTab === 'orders' ? '#ff7a00' : '#d1d5db', cursor: 'pointer' }}
+          >
+            Orders
+          </button>
+          <button 
+            onClick={() => setActiveTab('products')} 
+            style={{ fontWeight: '500', color: activeTab === 'products' ? '#ff7a00' : '#d1d5db', cursor: 'pointer' }}
+          >
+            Products
+          </button>
+          <button 
+            onClick={handleOpenAddMode} 
+            style={{ fontWeight: '500', color: activeTab === 'new-product' && !editingProduct ? '#ff7a00' : '#d1d5db', cursor: 'pointer' }}
+          >
+            New Product
+          </button>
+          <button 
+            onClick={logout} 
+            style={{ fontWeight: '500', color: '#ef4444', cursor: 'pointer' }}
+          >
+            Logout
+          </button>
+        </nav>
       </header>
 
-      {/* Tab Nav */}
-      <div className="tab-nav">
-        <button
-          className={`tab-btn ${activeTab === 'products' ? 'active' : ''}`}
-          onClick={() => setActiveTab('products')}
-          id="admin-tab-products"
-        >
-          <Package size={16} style={{ verticalAlign: 'text-bottom', marginRight: '6px' }} />
-          Products Catalog
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'orders' ? 'active' : ''}`}
-          onClick={() => setActiveTab('orders')}
-          id="admin-tab-orders"
-        >
-          <Clipboard size={16} style={{ verticalAlign: 'text-bottom', marginRight: '6px' }} />
-          Order Management
-        </button>
-      </div>
-
-      {/* Toolbar / Actions */}
-      <div className="admin-toolbar">
-        <h2>{activeTab === 'products' ? 'Catalog Inventory' : 'Processing Orders'}</h2>
-        {activeTab === 'products' && (
-          <button onClick={handleOpenAddModal} className="btn btn-primary" id="admin-add-product-btn">
-            <Plus size={16} /> Add Product
-          </button>
-        )}
-      </div>
-
-      {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '40px 0' }}>
-          <div className="spinner"></div>
-        </div>
-      ) : activeTab === 'products' ? (
-        <div className="card" id="admin-products-panel">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((prod) => (
-                <tr key={prod._id} id={`admin-product-row-${prod._id}`}>
-                  <td>
-                    <img
-                      src={prod.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100'}
-                      alt=""
-                      style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                    />
-                  </td>
-                  <td><strong>{prod.name}</strong></td>
-                  <td>{prod.category}</td>
-                  <td>${prod.price.toFixed(2)}</td>
-                  <td>{prod.stock} items</td>
-                  <td>
-                    <div className="action-row">
-                      <button
-                        onClick={() => handleOpenEditModal(prod)}
-                        className="btn btn-secondary"
-                        style={{ padding: '6px' }}
-                        id={`admin-edit-product-${prod._id}`}
-                      >
-                        <Edit size={14} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteProduct(prod._id)}
-                        className="btn btn-danger"
-                        style={{ padding: '6px' }}
-                        id={`admin-delete-product-${prod._id}`}
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="card" id="admin-orders-panel">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Customer</th>
-                <th>Fulfillment Address</th>
-                <th>Total Cost</th>
-                <th>Tracking Status</th>
-                <th>Update Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((ord) => (
-                <tr key={ord._id} id={`admin-order-row-${ord._id}`}>
-                  <td>
-                    <span style={{ fontFamily: 'monospace', fontSize: '13px' }}>{ord._id}</span>
-                  </td>
-                  <td>
-                    <strong>{ord.user?.name || 'Guest User'}</strong>
-                    <div style={{ fontSize: '12px' }}>{ord.user?.email || 'N/A'}</div>
-                  </td>
-                  <td>
-                    {ord.shippingAddress
-                      ? `${ord.shippingAddress.street}, ${ord.shippingAddress.city}, ${ord.shippingAddress.state}`
-                      : 'N/A'}
-                  </td>
-                  <td><strong>${ord.totalPrice.toFixed(2)}</strong></td>
-                  <td>
-                    <span
-                      style={{
-                        padding: '4px 10px',
-                        borderRadius: '20px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        backgroundColor:
-                          ord.orderStatus === 'Delivered'
-                            ? 'rgba(16, 185, 129, 0.1)'
-                            : ord.orderStatus === 'Cancelled'
-                            ? 'rgba(239, 68, 68, 0.1)'
-                            : 'rgba(245, 158, 11, 0.1)',
-                        color:
-                          ord.orderStatus === 'Delivered'
-                            ? 'var(--success-color)'
-                            : ord.orderStatus === 'Cancelled'
-                            ? 'var(--danger-color)'
-                            : 'var(--warning-color)',
-                      }}
-                    >
-                      {ord.orderStatus}
-                    </span>
-                  </td>
-                  <td>
-                    <select
-                      className="sort-select"
-                      style={{ padding: '4px 8px' }}
-                      value={ord.orderStatus}
-                      onChange={(e) => handleUpdateOrderStatus(ord._id, e.target.value)}
-                      id={`admin-order-status-select-${ord._id}`}
-                    >
-                      {orderStatuses.map((st) => (
-                        <option key={st} value={st}>
-                          {st}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Modal overlay for creating/editing product */}
-      {modalOpen && (
-        <div className="modal-overlay" id="admin-product-modal">
-          <div className="modal-content">
-            <h3>{editingProduct ? 'Modify Product Details' : 'Create New Catalog Item'}</h3>
-            <form onSubmit={handleProductSubmit} className="auth-form">
-              <div>
-                <label style={{ display: 'block', fontSize: '14px', marginBottom: '6px' }}>Product Title</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Wireless Headset"
-                  className="input-field"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  id="modal-product-name"
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '14px', marginBottom: '6px' }}>Category</label>
-                <select
-                  className="input-field"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  id="modal-product-category"
-                >
-                  {categoriesList.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '14px', marginBottom: '6px' }}>Price ($)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    min="0"
-                    placeholder="29.99"
-                    className="input-field"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                    id="modal-product-price"
-                  />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '14px', marginBottom: '6px' }}>Inventory Stock</label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    placeholder="15"
-                    className="input-field"
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
-                    id="modal-product-stock"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '14px', marginBottom: '6px' }}>Image URL</label>
-                <input
-                  type="url"
-                  placeholder="https://example.com/image.jpg"
-                  className="input-field"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  id="modal-product-image"
-                />
-              </div>
-
-              <div>
-                <label style={{ display: 'block', fontSize: '14px', marginBottom: '6px' }}>Description</label>
-                <textarea
-                  placeholder="Provide product details..."
-                  className="input-field"
-                  style={{ minHeight: '80px', resize: 'vertical' }}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  id="modal-product-desc"
-                  required
-                />
-              </div>
-
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="btn btn-secondary"
-                  id="modal-cancel-btn"
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary" id="modal-submit-btn">
-                  {editingProduct ? 'Save Changes' : 'Create Product'}
-                </button>
-              </div>
-            </form>
+      {/* Main Body */}
+      <main style={{ padding: '40px 5%' }}>
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '100px 0' }}>
+            <div className="spinner"></div>
           </div>
-        </div>
-      )}
+        ) : (
+          <>
+            {/* View 1: Main Admin Dashboard Overview */}
+            {activeTab === 'dashboard' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                
+                {/* 4 Cards Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px' }}>
+                  
+                  {/* Card: Total Users */}
+                  <div style={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '30px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ fontSize: '15px', color: '#9ca3af', fontWeight: '500' }}>Total users</div>
+                    <div style={{ fontSize: '36px', fontWeight: '700', color: '#ffffff' }}>{users.length}</div>
+                    <button 
+                      onClick={() => setActiveTab('users')} 
+                      style={{ border: '1px solid #ff7a00', color: '#ff7a00', borderRadius: '6px', padding: '6px 16px', fontWeight: '500', alignSelf: 'center', background: 'transparent', cursor: 'pointer' }}
+                    >
+                      View all
+                    </button>
+                  </div>
+
+                  {/* Card: All Products */}
+                  <div style={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '30px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ fontSize: '15px', color: '#9ca3af', fontWeight: '500' }}>All Products</div>
+                    <div style={{ fontSize: '36px', fontWeight: '700', color: '#ffffff' }}>{products.length}</div>
+                    <button 
+                      onClick={() => setActiveTab('products')} 
+                      style={{ border: '1px solid #ff7a00', color: '#ff7a00', borderRadius: '6px', padding: '6px 16px', fontWeight: '500', alignSelf: 'center', background: 'transparent', cursor: 'pointer' }}
+                    >
+                      View all
+                    </button>
+                  </div>
+
+                  {/* Card: All Orders */}
+                  <div style={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '30px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ fontSize: '15px', color: '#9ca3af', fontWeight: '500' }}>All Orders</div>
+                    <div style={{ fontSize: '36px', fontWeight: '700', color: '#ffffff' }}>{orders.length}</div>
+                    <button 
+                      onClick={() => setActiveTab('orders')} 
+                      style={{ border: '1px solid #ff7a00', color: '#ff7a00', borderRadius: '6px', padding: '6px 16px', fontWeight: '500', alignSelf: 'center', background: 'transparent', cursor: 'pointer' }}
+                    >
+                      View all
+                    </button>
+                  </div>
+
+                  {/* Card: Add Product */}
+                  <div style={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '30px 24px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ fontSize: '15px', color: '#9ca3af', fontWeight: '500' }}>Add Product</div>
+                    <div style={{ fontSize: '36px', fontWeight: '700', color: '#ffffff' }}>new</div>
+                    <button 
+                      onClick={handleOpenAddMode} 
+                      style={{ border: '1px solid #ff7a00', color: '#ff7a00', borderRadius: '6px', padding: '6px 16px', fontWeight: '500', alignSelf: 'center', background: 'transparent', cursor: 'pointer' }}
+                    >
+                      Add now
+                    </button>
+                  </div>
+
+                </div>
+
+                {/* Banner Card Row */}
+                <div style={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '30px', maxWidth: '450px' }}>
+                  <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', color: '#ffffff' }}>Update banner</h3>
+                  <form onSubmit={handleUpdateBanner} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <input 
+                      type="text" 
+                      placeholder="Banner url" 
+                      style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
+                      value={bannerUrl}
+                      onChange={(e) => setBannerUrl(e.target.value)}
+                    />
+                    <button 
+                      type="submit" 
+                      style={{ border: '1px solid #ff7a00', color: '#ff7a00', borderRadius: '6px', padding: '10px 20px', fontWeight: '500', background: 'transparent', width: 'fit-content', cursor: 'pointer' }}
+                    >
+                      Update
+                    </button>
+                  </form>
+                  {bannerSuccess && (
+                    <div style={{ color: '#10b981', marginTop: '12px', fontSize: '14px', fontWeight: '500' }}>
+                      Store promotion banner updated successfully!
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            )}
+
+            {/* View 2: Users List */}
+            {activeTab === 'users' && (
+              <div style={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '30px' }}>
+                <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#ffffff', marginBottom: '20px' }}>Registered Users</h2>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #374151' }}>
+                        <th style={{ padding: '12px', textAlign: 'left', color: '#9ca3af' }}>Name</th>
+                        <th style={{ padding: '12px', textAlign: 'left', color: '#9ca3af' }}>Email</th>
+                        <th style={{ padding: '12px', textAlign: 'left', color: '#9ca3af' }}>Phone</th>
+                        <th style={{ padding: '12px', textAlign: 'left', color: '#9ca3af' }}>Role</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map((usr) => (
+                        <tr key={usr._id} style={{ borderBottom: '1px solid #1f2937' }}>
+                          <td style={{ padding: '12px' }}><strong>{usr.name}</strong></td>
+                          <td style={{ padding: '12px' }}>{usr.email}</td>
+                          <td style={{ padding: '12px' }}>{usr.phone || 'N/A'}</td>
+                          <td style={{ padding: '12px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: '600', padding: '2px 8px', borderRadius: '4px', backgroundColor: usr.role === 'admin' ? 'rgba(245,158,11,0.2)' : 'rgba(170,59,255,0.2)', color: usr.role === 'admin' ? '#f59e0b' : '#c084fc' }}>
+                              {usr.role}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* View 3: Orders List */}
+            {activeTab === 'orders' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#00d2ff', marginBottom: '10px' }}>Orders</h2>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  {orders.map((order) => {
+                    const firstItem = order.orderItems[0] || {};
+                    return (
+                      <div 
+                        key={order._id} 
+                        style={{ display: 'flex', gap: '24px', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '24px' }}
+                      >
+                        {/* Left: Thumbnail & carousel preview */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '150px' }}>
+                          <img 
+                            src={firstItem.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150'} 
+                            alt="" 
+                            style={{ width: '150px', height: '150px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #374151' }}
+                          />
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            {order.orderItems.map((item, idx) => (
+                              <img 
+                                key={idx}
+                                src={item.image} 
+                                alt="" 
+                                style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #374151' }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Right: Detailed text fields */}
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          
+                          {/* Product link */}
+                          <div style={{ fontSize: '18px', fontWeight: '600', color: '#00d2ff' }}>
+                            {firstItem.name}
+                          </div>
+
+                          {/* Params row */}
+                          <div style={{ fontSize: '14px', color: '#d1d5db' }}>
+                            Size: <strong>{firstItem.size || 'M'}</strong> | Quantity: <strong>{firstItem.quantity}</strong> | Price: <strong>₹ {firstItem.price}</strong> | Payment method: <strong>{order.paymentMethod || 'netbanking'}</strong>
+                          </div>
+
+                          {/* User data */}
+                          <div style={{ fontSize: '13px', color: '#9ca3af', backgroundColor: '#1f2937', padding: '8px 12px', borderRadius: '6px', margin: '4px 0' }}>
+                            <div>UserId: <span style={{ fontFamily: 'monospace' }}>{order.user?._id || order.user}</span></div>
+                            <div>Name: {order.user?.name || 'Simon'} | Email: {order.user?.email || 'simon@gmail.com'} | Mobile: {order.user?.phone || '8798790898'}</div>
+                          </div>
+
+                          {/* Dates row */}
+                          <div style={{ fontSize: '13px', color: '#d1d5db' }}>
+                            Ordered on: <strong>{new Date(order.createdAt).toISOString().split('T')[0]}</strong> | Address: <strong>{order.shippingAddress.city}</strong> | Pincode: <strong>{order.shippingAddress.postalCode}</strong>
+                          </div>
+
+                          {/* Status and Action Buttons */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '12px', flexWrap: 'wrap' }}>
+                            <div style={{ fontSize: '14px', color: '#d1d5db' }}>
+                              Order status: <span style={{ color: order.orderStatus === 'Delivered' ? '#10b981' : order.orderStatus === 'Cancelled' ? '#ef4444' : '#f59e0b', fontWeight: '600' }}>{order.orderStatus}</span>
+                            </div>
+                            
+                            {/* Update Status Dropdown */}
+                            <select 
+                              className="sort-select"
+                              style={{ backgroundColor: '#1f2937', color: '#ffffff', border: '1px solid #374151', padding: '6px 12px', borderRadius: '6px' }}
+                              value={selectedStatus[order._id] || order.orderStatus}
+                              onChange={(e) => setSelectedStatus({ ...selectedStatus, [order._id]: e.target.value })}
+                            >
+                              {orderStatuses.map((st) => (
+                                <option key={st} value={st}>{st}</option>
+                              ))}
+                            </select>
+
+                            <button 
+                              onClick={() => handleUpdateOrderStatus(order._id)}
+                              style={{ backgroundColor: '#3b82f6', color: '#ffffff', padding: '6px 16px', borderRadius: '6px', fontWeight: '500', cursor: 'pointer' }}
+                            >
+                              Update
+                            </button>
+
+                            <button 
+                              onClick={() => handleCancelOrder(order._id)}
+                              style={{ backgroundColor: '#ef4444', color: '#ffffff', padding: '6px 16px', borderRadius: '6px', fontWeight: '500', cursor: 'pointer' }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* View 4: Products Grid (Catalog) */}
+            {activeTab === 'products' && (
+              <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '30px' }}>
+                
+                {/* Left Panel Sidebar Filters */}
+                <aside style={{ backgroundColor: '#111827', border: '1px solid #374151', padding: '20px', borderRadius: '12px', alignSelf: 'start' }}>
+                  <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '20px', borderBottom: '1px solid #374151', paddingBottom: '10px' }}>Filters</h3>
+                  
+                  {/* Sort By */}
+                  <div style={{ marginBottom: '24px' }}>
+                    <h4 style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '10px' }}>Sort By</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {['Popularity', 'Price (low to high)', 'Price (high to low)', 'Discount'].map((s) => (
+                        <label key={s} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                          <input 
+                            type="radio" 
+                            name="sortBy" 
+                            checked={sortBy === s}
+                            onChange={() => setSortBy(s)}
+                          />
+                          {s}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Categories */}
+                  <div style={{ marginBottom: '24px' }}>
+                    <h4 style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '10px' }}>Categories</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {categoriesList.map((cat) => (
+                        <label key={cat} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                          <input 
+                            type="checkbox" 
+                            checked={filterCategories.includes(cat)}
+                            onChange={() => handleFilterCategoryChange(cat)}
+                          />
+                          {cat}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Gender */}
+                  <div>
+                    <h4 style={{ fontSize: '14px', color: '#9ca3af', marginBottom: '10px' }}>Gender</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {gendersList.map((gen) => (
+                        <label key={gen} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '14px' }}>
+                          <input 
+                            type="checkbox" 
+                            checked={filterGenders.includes(gen)}
+                            onChange={() => handleFilterGenderChange(gen)}
+                          />
+                          {gen}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                </aside>
+
+                {/* Right Panel Grid */}
+                <div>
+                  <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '20px', color: '#ffffff' }}>All Products</h2>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '24px' }}>
+                    {getFilteredProducts().map((prod) => {
+                      const discountPercentage = prod.discount || 0;
+                      const originalPrice = prod.price || 0;
+                      const discountedPrice = Math.round(originalPrice * (1 - discountPercentage / 100));
+
+                      return (
+                        <div 
+                          key={prod._id} 
+                          style={{ backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', justifycontent: 'space-between' }}
+                        >
+                          {/* Image Box */}
+                          <div style={{ backgroundColor: '#ffffff', borderRadius: '8px', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px', aspectRatio: '1' }}>
+                            <img 
+                              src={prod.mainImg || prod.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200'} 
+                              alt="" 
+                              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                            />
+                          </div>
+
+                          <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#ffffff', marginBottom: '4px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                            {prod.title || prod.name}
+                          </h3>
+                          <p style={{ fontSize: '13px', color: '#9ca3af', marginBottom: '12px', height: '36px', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                            {prod.description}
+                          </p>
+
+                          {/* Price metrics */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '16px', fontWeight: '700', color: '#ff4b4b' }}>
+                              ₹ {discountedPrice}
+                            </span>
+                            {discountPercentage > 0 && (
+                              <>
+                                <span style={{ fontSize: '13px', textDecoration: 'line-through', color: '#9ca3af' }}>
+                                  {originalPrice}
+                                </span>
+                                <span style={{ fontSize: '12px', color: '#ff7a00', fontWeight: '600' }}>
+                                  ({discountPercentage}% off)
+                                </span>
+                              </>
+                            )}
+                          </div>
+
+                          <button 
+                            onClick={() => handleOpenEditMode(prod)}
+                            style={{ border: '1px solid #ff7a00', color: '#ff7a00', background: 'transparent', padding: '8px', borderRadius: '8px', fontWeight: '500', width: '100%', cursor: 'pointer' }}
+                          >
+                            Update
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* View 5: New Product / Edit Product */}
+            {activeTab === 'new-product' && (
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div style={{ width: '100%', maxWidth: '500px', backgroundColor: '#111827', border: '1px solid #374151', borderRadius: '12px', padding: '30px' }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: '700', textAlign: 'center', marginBottom: '24px', color: '#ffffff' }}>
+                    {editingProduct ? 'Edit Product' : 'New Product'}
+                  </h2>
+                  
+                  <form onSubmit={handleProductSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div>
+                      <input 
+                        type="text" 
+                        placeholder="Product name" 
+                        required
+                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <textarea 
+                        placeholder="Product Description" 
+                        required
+                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff', minHeight: '80px', resize: 'vertical' }}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <input 
+                        type="url" 
+                        placeholder="Thumbnail img url" 
+                        required
+                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
+                        value={mainImg}
+                        onChange={(e) => setMainImg(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Inline row for carousel image links */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                      <input 
+                        type="url" 
+                        placeholder="Add on img1 url" 
+                        style={{ padding: '10px', borderRadius: '6px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff', fontSize: '12px' }}
+                        value={carouselImg1}
+                        onChange={(e) => setCarouselImg1(e.target.value)}
+                      />
+                      <input 
+                        type="url" 
+                        placeholder="Add on img2 url" 
+                        style={{ padding: '10px', borderRadius: '6px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff', fontSize: '12px' }}
+                        value={carouselImg2}
+                        onChange={(e) => setCarouselImg2(e.target.value)}
+                      />
+                      <input 
+                        type="url" 
+                        placeholder="Add on img3 url" 
+                        style={{ padding: '10px', borderRadius: '6px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff', fontSize: '12px' }}
+                        value={carouselImg3}
+                        onChange={(e) => setCarouselImg3(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Price and Discount inline inputs */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                      <div>
+                        <input 
+                          type="number" 
+                          placeholder="Price (original)" 
+                          required
+                          min="0"
+                          style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
+                          value={price}
+                          onChange={(e) => setPrice(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <input 
+                          type="number" 
+                          placeholder="Discount (%)" 
+                          min="0"
+                          max="100"
+                          style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
+                          value={discount}
+                          onChange={(e) => setDiscount(e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '12px', color: '#9ca3af', marginBottom: '6px' }}>Category</label>
+                        <select
+                          style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
+                          value={category}
+                          onChange={(e) => setCategory(e.target.value)}
+                        >
+                          {categoriesList.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '12px', color: '#9ca3af', marginBottom: '6px' }}>Gender</label>
+                        <select
+                          style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
+                          value={gender}
+                          onChange={(e) => setGender(e.target.value)}
+                        >
+                          {gendersList.map((g) => (
+                            <option key={g} value={g}>{g}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Available sizes checkboxes */}
+                    <div>
+                      <label style={{ display: 'block', fontSize: '14px', color: '#ffffff', marginBottom: '8px', fontWeight: '500' }}>Available Size</label>
+                      <div style={{ display: 'flex', gap: '16px' }}>
+                        {sizesList.map((size) => (
+                          <label key={size} style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '14px' }}>
+                            <input 
+                              type="checkbox" 
+                              checked={selectedSizes.includes(size)}
+                              onChange={() => handleSizeChange(size)}
+                            />
+                            {size}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button 
+                      type="submit" 
+                      style={{ width: '100%', padding: '14px', backgroundColor: '#00d2ff', color: '#111827', border: 'none', borderRadius: '8px', fontWeight: '700', fontSize: '16px', marginTop: '10px', cursor: 'pointer' }}
+                    >
+                      {editingProduct ? 'Save Product Changes' : 'Add product'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </main>
     </div>
   );
 };
