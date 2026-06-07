@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
+// Define schemas to match Mongoose models directly
 const productSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -13,7 +15,23 @@ const productSchema = new mongoose.Schema({
   discount: { type: Number, default: 0 }
 });
 
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  phone: { type: String }
+});
+
+// Hash password before saving for User model in seeder
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
 const Product = mongoose.model('products', productSchema);
+const User = mongoose.model('users', userSchema);
 
 const sampleProducts = [
   {
@@ -96,7 +114,22 @@ const seedDB = async () => {
 
     // Insert new products
     await Product.insertMany(sampleProducts);
-    console.log('Successfully seeded database with specific products!');
+    console.log('Successfully seeded database with products!');
+
+    // Check if admin user already exists, if not create one
+    const adminExists = await User.findOne({ email: 'admin@shopez.com' });
+    if (!adminExists) {
+      await User.create({
+        name: "ShopEZ Administrator",
+        email: "admin@shopez.com",
+        password: "adminpassword123", // Will be automatically hashed by pre-save hook
+        role: "admin",
+        phone: "9999999999"
+      });
+      console.log('Successfully seeded default admin user!');
+    } else {
+      console.log('Admin user admin@shopez.com already exists.');
+    }
 
     process.exit(0);
   } catch (error) {
