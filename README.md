@@ -25,6 +25,17 @@ You can access the live demo of the application here:
 *   **Frontend Client**: [https://e-commerce-application-neon-five.vercel.app/](https://e-commerce-application-neon-five.vercel.app/)
 *   **Backend Server**: [https://shopez-api-c30e.onrender.com](https://shopez-api-c30e.onrender.com)
 
+### 🔑 Test Accounts & Credentials
+You can log in and test the application features using these pre-seeded accounts:
+
+*   **Administrator Account (Full CRUD & Orders Access)**:
+    *   **Email**: `admin@shopez.com`
+    *   **Password**: `adminpassword123`
+*   **Customer Account (Add to Cart & Checkout)**:
+    *   *You can register any new account on the Sign Up page, or use:*
+    *   **Email**: `test@email.com`
+    *   **Password**: `password123`
+
 ---
 
 ## 🚀 How to Create a Demo Link
