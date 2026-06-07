@@ -15,6 +15,7 @@ Before beginning development, we have established the project architecture, data
     *   **[Roles & Responsibilities](docs/roles_responsibilities.md)** ([Local file:// Link](file:///d:/PROJECTS/E-commerce%20Application/docs/roles_responsibilities.md)) - Role-Based Access Control (RBAC) permissions.
     *   **[User Flows](docs/user_flow.md)** ([Local file:// Link](file:///d:/PROJECTS/E-commerce%20Application/docs/user_flow.md)) - User checkout sequence flow and payment flows.
     *   **[MVC Pattern Mapping](docs/mvc_pattern.md)** ([Local file:// Link](file:///d:/PROJECTS/E-commerce%20Application/docs/mvc_pattern.md)) - Model-View-Controller structure definition.
+*   **[E-commerce UI Walkthrough](walkthrough.md)** - Walkthrough guide showing full screenshot tours of the user interfaces.
 
 ## 🔗 Live Demo
 
