@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingCart, ArrowLeft, Star, Heart } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Star, Heart, Check } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
 
 const ProductDetail = () => {
@@ -13,6 +13,7 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState('M');
   const [quantity, setQuantity] = useState(1);
   const [addedMessage, setAddedMessage] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -39,7 +40,11 @@ const ProductDetail = () => {
     if (product) {
       addToCart(product, quantity, selectedSize);
       setAddedMessage(true);
-      setTimeout(() => setAddedMessage(false), 3000);
+      setIsAdded(true);
+      setTimeout(() => {
+        setAddedMessage(false);
+        setIsAdded(false);
+      }, 2000);
     }
   };
 
@@ -64,7 +69,7 @@ const ProductDetail = () => {
 
   const imageUrl = product.mainImg || product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60';
   const defaultSizes = product.sizes && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL'];
-  const productStock = product.stock !== undefined ? product.stock : 99;
+  const productStock = 99; // Standard infinite stock
 
   return (
     <div className="detail-container" id="product-detail-page">
@@ -103,8 +108,8 @@ const ProductDetail = () => {
 
         <div className="detail-price-row">
           <span className="detail-price" id="detail-product-price">${product.price.toFixed(2)}</span>
-          <span className={`detail-stock ${productStock > 0 ? 'in-stock' : 'out-of-stock'}`}>
-            {productStock > 0 ? `In Stock (${productStock})` : 'Out of Stock'}
+          <span className="detail-stock in-stock">
+            In Stock
           </span>
         </div>
 
@@ -147,10 +152,16 @@ const ProductDetail = () => {
               <button
                 onClick={handleAddToCart}
                 className="btn btn-primary"
-                style={{ flex: 1, padding: '14px' }}
+                style={{
+                  flex: 1,
+                  padding: '14px',
+                  backgroundColor: isAdded ? 'var(--success-color)' : 'var(--primary-color)',
+                  transition: 'background-color 0.2s ease'
+                }}
                 id="detail-add-to-cart-btn"
               >
-                <ShoppingCart size={18} /> Add to Cart
+                {isAdded ? <Check size={18} /> : <ShoppingCart size={18} />}
+                {isAdded ? ' Added to Cart!' : ' Add to Cart'}
               </button>
               <button className="btn btn-secondary" style={{ padding: '14px' }}>
                 <Heart size={18} />
