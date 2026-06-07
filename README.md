@@ -20,7 +20,10 @@ Before beginning development, we have established the project architecture, data
 ## 🔗 Live Demo
 
 You can access the live demo of the application here:
-👉 **[Live Demo Link (e.g. Vercel/Render URL)](#)**
+👉 **[ShopEZ Live Demo (Vercel)](https://e-commerce-application-neon-five.vercel.app/)**
+
+*   **Frontend Client**: [https://e-commerce-application-neon-five.vercel.app/](https://e-commerce-application-neon-five.vercel.app/)
+*   **Backend Server**: [https://shopez-api-c30e.onrender.com](https://shopez-api-c30e.onrender.com)
 
 ---
 
