@@ -26,11 +26,12 @@ const Cart = () => {
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [country, setCountry] = useState('United States');
-  const [paymentMethod, setPaymentMethod] = useState('Credit Card');
+  const [country, setCountry] = useState('India');
+  const [paymentMethod, setPaymentMethod] = useState('Cash on Delivery');
   const [placingOrder, setPlacingOrder] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState('');
+  const [orderError, setOrderError] = useState('');
 
   const handleCheckoutToggle = () => {
     if (!user) {
@@ -52,6 +53,7 @@ const Cart = () => {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setPlacingOrder(true);
+    setOrderError('');
 
     try {
       const orderPayload = {
@@ -70,7 +72,7 @@ const Cart = () => {
       clearCart();
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || 'Failed to place order');
+      setOrderError(err.response?.data?.message || 'Failed to place order. Please try again.');
     } finally {
       setPlacingOrder(false);
     }
@@ -230,12 +232,28 @@ const Cart = () => {
                   onChange={(e) => setPaymentMethod(e.target.value)}
                   id="checkout-payment-method"
                 >
-                  <option value="Credit Card">Credit Card / Debit Card</option>
-                  <option value="PayPal">PayPal</option>
                   <option value="Cash on Delivery">Cash on Delivery</option>
+                  <option value="Credit Card">Credit Card / Debit Card</option>
+                  <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
+                  <option value="Net Banking">Net Banking</option>
+                  <option value="PayPal">PayPal</option>
                 </select>
               </div>
 
+              {orderError && (
+                <div style={{
+                  backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                  color: 'var(--danger-color)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  marginTop: '10px'
+                }} id="order-error-banner">
+                  ⚠️ {orderError}
+                </div>
+              )}
               <button
                 type="submit"
                 disabled={placingOrder}

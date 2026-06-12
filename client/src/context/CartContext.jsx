@@ -12,7 +12,8 @@ export const CartProvider = ({ children }) => {
       try {
         setCartItems(JSON.parse(localCart));
       } catch (error) {
-        console.error('Error parsing cart items', error);
+        console.error('Error parsing cart items from localStorage', error);
+        localStorage.removeItem('shopez_cart');
       }
     }
   }, []);
@@ -31,21 +32,33 @@ export const CartProvider = ({ children }) => {
 
       if (existingItemIndex > -1) {
         const updatedItems = [...prevItems];
-        updatedItems[existingItemIndex].quantity += quantity;
+        updatedItems[existingItemIndex] = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity + quantity,
+        };
         return updatedItems;
       } else {
+        // Resolve unified name and image for both legacy (title/mainImg) and new (name/images) schemas
+        const resolvedName = product.name || product.title || 'Unknown Product';
+        const resolvedImage = product.mainImg || (product.images && product.images[0]) || '';
+        const resolvedStock = product.stock !== undefined ? product.stock : 100;
+
         return [
           ...prevItems,
           {
             product: product._id,
-            title: product.title || product.name,
-            name: product.title || product.name,
+            // Both name fields for compatibility with Order schema and UI
+            name: resolvedName,
+            title: resolvedName,
             price: product.price,
-            mainImg: product.mainImg || product.images?.[0] || '',
-            image: product.mainImg || product.images?.[0] || '',
-            stock: product.stock !== undefined ? product.stock : 99,
+            // Both image fields for compatibility
+            image: resolvedImage,
+            mainImg: resolvedImage,
+            stock: resolvedStock,
             size,
             quantity,
+            discount: product.discount || 0,
+            category: product.category || '',
           },
         ];
       }
@@ -79,19 +92,19 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  // Get pricing metrics
+  // Get items price (subtotal)
   const getItemsPrice = () => {
     return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   };
 
   const getTaxPrice = () => {
-    return Number((getItemsPrice() * 0.18).toFixed(2)); // 18% GST/Tax
+    return Number((getItemsPrice() * 0.18).toFixed(2)); // 18% GST
   };
 
   const getShippingPrice = () => {
     const itemsPrice = getItemsPrice();
     if (itemsPrice === 0) return 0;
-    return itemsPrice > 1000 ? 0 : 100; // Free shipping over 1000 INR
+    return itemsPrice > 1000 ? 0 : 100; // Free shipping over ₹1000
   };
 
   const getTotalPrice = () => {

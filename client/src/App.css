@@ -341,6 +341,101 @@
   background-color: var(--primary-hover);
 }
 
+/* Card & Detail Stepper / Quantity Styles */
+.card-qty-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 4px 8px;
+  transition: var(--transition);
+  height: 34px;
+  box-sizing: border-box;
+}
+
+.card-qty-control:hover {
+  border-color: var(--primary-color);
+}
+
+.card-qty-control .qty-btn {
+  background: none;
+  border: none;
+  color: var(--text-dark);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.card-qty-control .qty-btn:hover {
+  color: var(--primary-color);
+  transform: scale(1.25);
+}
+
+.card-qty-control .qty-value {
+  font-weight: 600;
+  color: var(--text-dark);
+  min-width: 16px;
+  text-align: center;
+  font-size: 14px;
+  user-select: none;
+}
+
+.detail-qty-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--input-bg);
+  height: 44px;
+  transition: var(--transition);
+}
+
+.detail-qty-stepper:hover {
+  border-color: var(--primary-color);
+}
+
+.detail-qty-stepper .stepper-btn {
+  border: none;
+  background: none;
+  color: var(--text-dark);
+  width: 40px;
+  height: 100%;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.detail-qty-stepper .stepper-btn:hover {
+  background-color: rgba(170, 59, 255, 0.1);
+  color: var(--primary-color);
+}
+
+.detail-qty-stepper .stepper-btn:active {
+  background-color: rgba(170, 59, 255, 0.2);
+}
+
+.detail-qty-stepper .stepper-value {
+  padding: 0 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  min-width: 32px;
+  text-align: center;
+  font-size: 16px;
+  user-select: none;
+}
+
 /* Product Detail Page */
 .detail-container {
   padding: 40px 5%;

@@ -13,6 +13,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import { Navigate } from 'react-router-dom';
 
 import './App.css';
 
@@ -42,6 +43,9 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+
+          {/* Alias: /my-orders → /profile (profile has order history tab) */}
+          <Route path="/my-orders" element={<Navigate to="/profile" replace />} />
 
           {/* Protected Admin Routes */}
           <Route

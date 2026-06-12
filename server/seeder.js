@@ -2,138 +2,174 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
-// Define schemas to match Mongoose models directly
-const productSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  mainImg: { type: String, required: true },
-  carousel: { type: Array, default: [] },
-  sizes: { type: Array, default: [] },
-  category: { type: String, required: true },
-  gender: { type: String, default: 'Unisex' },
-  price: { type: Number, required: true, default: 0 },
-  discount: { type: Number, default: 0 }
-});
-
-const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  role: { type: String, enum: ['user', 'admin'], default: 'user' },
-  phone: { type: String }
-});
-
-// Hash password before saving for User model in seeder
-userSchema.pre('save', async function () {
-  if (!this.isModified('password')) return;
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
-
-const Product = mongoose.model('products', productSchema);
-const User = mongoose.model('users', userSchema);
+const connectDB = require('./config/db');
+const Product = require('./models/Product');
+const User = require('./models/User');
 
 const sampleProducts = [
   {
-    title: "Iphone 12",
-    description: "Apple Iphone with 8GB ram and 128GB internal storage. Features advanced dual-camera system and A14 Bionic chip.",
-    mainImg: "https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&q=80",
-    carousel: ["https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&q=80"],
-    sizes: ["128GB", "256GB"],
-    category: "mobiles",
-    gender: "Unisex",
+    name: 'iPhone 12',
+    title: 'iPhone 12',
+    description: 'Apple iPhone 12 with 8GB RAM and 128GB internal storage. Features advanced dual-camera system and A14 Bionic chip for blazing-fast performance.',
+    mainImg: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&q=80',
+    images: ['https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&q=80'],
+    carousel: ['https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&q=80'],
+    sizes: ['128GB', '256GB'],
+    category: 'mobiles',
+    gender: 'Unisex',
     price: 79999,
-    discount: 15
+    discount: 15,
+    stock: 50,
+    rating: 4.5,
+    numReviews: 124,
   },
   {
-    title: "Realme buds",
-    description: "TWS buds with 10.2mm drivers offering deep bass boost and 28 hours total playback time.",
-    mainImg: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80",
-    carousel: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80"],
-    sizes: ["Standard"],
-    category: "Electronics",
-    gender: "Unisex",
+    name: 'Realme Buds Air Pro',
+    title: 'Realme Buds Air Pro',
+    description: 'TWS earbuds with 10.2mm dynamic drivers, Active Noise Cancellation, and 28 hours total playback. Deep bass boost with crystal clear highs.',
+    mainImg: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80',
+    images: ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80'],
+    carousel: ['https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80'],
+    sizes: ['Standard'],
+    category: 'Electronics',
+    gender: 'Unisex',
     price: 3999,
-    discount: 35
+    discount: 35,
+    stock: 120,
+    rating: 4.2,
+    numReviews: 89,
   },
   {
-    title: "Cricket Ball",
-    description: "High-quality red leather cricket ball for professional matches and practice.",
-    mainImg: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80",
-    carousel: ["https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80"],
-    sizes: ["Full Size"],
-    category: "Sports-Equipment",
-    gender: "Unisex",
+    name: 'Professional Cricket Ball',
+    title: 'Professional Cricket Ball',
+    description: 'High-quality red leather cricket ball for professional matches and practice sessions. Meets international standards for durability and bounce.',
+    mainImg: 'https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80',
+    images: ['https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80'],
+    carousel: ['https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80'],
+    sizes: ['Full Size'],
+    category: 'Sports-Equipment',
+    gender: 'Unisex',
     price: 1699,
-    discount: 23
+    discount: 23,
+    stock: 200,
+    rating: 4.7,
+    numReviews: 56,
   },
   {
-    title: "Chess Board",
-    description: "Premium quality chess board with beautifully crafted pieces. Perfect for sharpening your strategic skills.",
-    mainImg: "https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80",
-    carousel: ["https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80"],
-    sizes: ["Large"],
-    category: "Sports-Equipment",
-    gender: "Unisex",
+    name: 'Premium Chess Board Set',
+    title: 'Premium Chess Board Set',
+    description: 'Premium quality chess board with beautifully hand-crafted pieces. Weighted pieces with a felted base for perfect grip. Ideal for beginners and pros.',
+    mainImg: 'https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80',
+    images: ['https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80'],
+    carousel: ['https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80'],
+    sizes: ['Large'],
+    category: 'Sports-Equipment',
+    gender: 'Unisex',
     price: 1838,
-    discount: 0
+    discount: 0,
+    stock: 80,
+    rating: 4.8,
+    numReviews: 34,
   },
   {
-    title: "Unisex Cotton Hoodie",
-    description: "Ultra-soft cotton blend fleece hoodie with adjustable drawstrings and spacious pockets.",
-    mainImg: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&q=80",
-    carousel: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&q=80"],
-    sizes: ["S", "M", "L", "XL"],
-    category: "Fashion",
-    gender: "Unisex",
+    name: 'Unisex Cotton Hoodie',
+    title: 'Unisex Cotton Hoodie',
+    description: 'Ultra-soft 100% cotton blend fleece hoodie with adjustable drawstrings, kangaroo pocket, and ribbed cuffs. Timeless comfort for any season.',
+    mainImg: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&q=80',
+    images: ['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&q=80'],
+    carousel: ['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&q=80'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    category: 'Fashion',
+    gender: 'Unisex',
     price: 1999,
-    discount: 10
+    discount: 10,
+    stock: 150,
+    rating: 4.4,
+    numReviews: 211,
   },
   {
-    title: "Ceramic Coffee Mug Set",
-    description: "A set of 4 minimalist matte-finish ceramic coffee mugs designed for modern kitchens.",
-    mainImg: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80",
-    carousel: ["https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80"],
-    sizes: ["350ml"],
-    category: "Groceries",
-    gender: "Unisex",
+    name: 'Ceramic Coffee Mug Set',
+    title: 'Ceramic Coffee Mug Set',
+    description: 'A set of 4 minimalist matte-finish ceramic coffee mugs designed for modern kitchens. Microwave and dishwasher safe. 350ml capacity each.',
+    mainImg: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80',
+    images: ['https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80'],
+    carousel: ['https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500&q=80'],
+    sizes: ['350ml'],
+    category: 'Groceries',
+    gender: 'Unisex',
     price: 999,
-    discount: 5
-  }
+    discount: 5,
+    stock: 300,
+    rating: 4.3,
+    numReviews: 67,
+  },
+  {
+    name: 'Samsung Galaxy Tab A8',
+    title: 'Samsung Galaxy Tab A8',
+    description: 'Samsung Galaxy Tab A8 with 10.5-inch LCD display, Unisoc T618 processor, 4GB RAM, 64GB storage, and a 7040mAh battery. Perfect for work and entertainment.',
+    mainImg: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&q=80',
+    images: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&q=80'],
+    carousel: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&q=80'],
+    sizes: ['64GB', '128GB'],
+    category: 'Electronics',
+    gender: 'Unisex',
+    price: 24999,
+    discount: 12,
+    stock: 45,
+    rating: 4.1,
+    numReviews: 98,
+  },
+  {
+    name: "Men's Running Shoes",
+    title: "Men's Running Shoes",
+    description: 'Lightweight and breathable mesh running shoes with responsive foam cushioning and a non-slip rubber outsole. Perfect for daily training and casual wear.',
+    mainImg: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80',
+    images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80'],
+    carousel: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80'],
+    sizes: ['6', '7', '8', '9', '10', '11'],
+    category: 'Fashion',
+    gender: 'Men',
+    price: 2499,
+    discount: 20,
+    stock: 90,
+    rating: 4.6,
+    numReviews: 188,
+  },
 ];
 
 const seedDB = async () => {
   try {
-    const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/shopez';
-    console.log(`Connecting to database: ${mongoUri}`);
-    await mongoose.connect(mongoUri);
+    await connectDB();
+    console.log('✅ Connected to MongoDB');
 
-    // Delete existing products
-    await Product.deleteMany();
-    console.log('Cleared existing products');
+    // Clear existing products
+    await Product.deleteMany({});
+    console.log('🗑️  Cleared existing products');
 
-    // Insert new products
-    await Product.insertMany(sampleProducts);
-    console.log('Successfully seeded database with products!');
+    // Insert new products with proper unified schema
+    const inserted = await Product.insertMany(sampleProducts);
+    console.log(`✅ Seeded ${inserted.length} products successfully!`);
 
-    // Check if admin user already exists, if not create one
+    // Create admin user if not exists
     const adminExists = await User.findOne({ email: 'admin@shopez.com' });
     if (!adminExists) {
       await User.create({
-        name: "ShopEZ Administrator",
-        email: "admin@shopez.com",
-        password: "adminpassword123", // Will be automatically hashed by pre-save hook
-        role: "admin",
-        phone: "9999999999"
+        name: 'ShopEZ Administrator',
+        email: 'admin@shopez.com',
+        password: 'adminpassword123',
+        role: 'admin',
+        phone: '9999999999',
       });
-      console.log('Successfully seeded default admin user!');
+      console.log('✅ Admin user created: admin@shopez.com / adminpassword123');
     } else {
-      console.log('Admin user admin@shopez.com already exists.');
+      console.log('ℹ️  Admin user already exists, skipping.');
     }
 
+    console.log('🎉 Database seeding complete!');
     process.exit(0);
   } catch (error) {
-    console.error(`Error seeding database: ${error.message}`);
+    console.error(`❌ Seeding failed: ${error.message}`);
+    console.error(error);
     process.exit(1);
   }
 };

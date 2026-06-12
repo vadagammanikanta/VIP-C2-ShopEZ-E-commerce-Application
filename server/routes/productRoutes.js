@@ -6,8 +6,12 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
+  getCategories,
 } = require('../controllers/productController');
 const { protect, admin } = require('../middleware/authMiddleware');
+
+// Categories endpoint must be before /:id to avoid being captured by it
+router.get('/categories', getCategories);
 
 router.route('/')
   .get(getProducts)

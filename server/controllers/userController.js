@@ -27,8 +27,8 @@ const registerUser = async (req, res, next) => {
       throw new Error('User already exists');
     }
 
-    // Set role to 'user' by default (admins can be registered or updated via admin setup)
-    const userRole = role === 'admin' ? 'admin' : 'user';
+    // Security: role is ALWAYS 'user' on self-registration. Admins are created only via seeder or DB admin.
+    const userRole = 'user';
 
     const user = await User.create({
       name,

@@ -21,26 +21,46 @@ const createOrder = async (req, res, next) => {
       throw new Error('No order items provided');
     }
 
-    if (!shippingAddress) {
+    if (!shippingAddress || !shippingAddress.street || !shippingAddress.city) {
       res.status(400);
-      throw new Error('Shipping address is required');
+      throw new Error('Complete shipping address is required');
     }
 
-    // Verify stock and update product inventory
+    // Normalize and validate each order item, verify stock
+    const normalizedItems = [];
     for (const item of orderItems) {
       const product = await Product.findById(item.product);
       if (!product) {
         res.status(404);
         throw new Error(`Product not found with ID: ${item.product}`);
       }
-      if (product.stock < item.quantity) {
+
+      // Unified name: support both name and title fields
+      const productName = product.name || product.title || 'Unknown Product';
+      const productStock = product.stock !== undefined ? product.stock : 999;
+
+      if (productStock < item.quantity) {
         res.status(400);
-        throw new Error(`Insufficient stock for product: ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}`);
+        throw new Error(
+          `Insufficient stock for "${productName}". Available: ${productStock}, Requested: ${item.quantity}`
+        );
       }
+
+      // Normalize the order item to match the schema
+      normalizedItems.push({
+        product: product._id,
+        name: productName,
+        title: productName,
+        quantity: item.quantity,
+        price: item.price || product.price,
+        size: item.size || '',
+        image: item.image || item.mainImg || product.mainImg || (product.images && product.images[0]) || '',
+        mainImg: item.mainImg || item.image || product.mainImg || (product.images && product.images[0]) || '',
+      });
     }
 
-    // Deduct stock for all items
-    for (const item of orderItems) {
+    // Deduct stock for all items (after all validations pass)
+    for (const item of normalizedItems) {
       await Product.findByIdAndUpdate(item.product, {
         $inc: { stock: -item.quantity }
       });
@@ -49,13 +69,13 @@ const createOrder = async (req, res, next) => {
     // Create the order
     const order = new Order({
       user: req.user._id,
-      orderItems,
+      orderItems: normalizedItems,
       shippingAddress,
-      paymentMethod,
-      itemsPrice,
-      taxPrice,
-      shippingPrice,
-      totalPrice,
+      paymentMethod: paymentMethod || 'Cash on Delivery',
+      itemsPrice: itemsPrice || 0,
+      taxPrice: taxPrice || 0,
+      shippingPrice: shippingPrice || 0,
+      totalPrice: totalPrice || 0,
     });
 
     const createdOrder = await order.save();
@@ -82,7 +102,7 @@ const getMyOrders = async (req, res, next) => {
 // @access  Private
 const getOrderById = async (req, res, next) => {
   try {
-    const order = await Order.findById(req.params.id).populate('user', 'name email');
+    const order = await Order.findById(req.params.id).populate('user', 'name email phone');
 
     if (order) {
       // Allow only the owner or an admin to see this order
@@ -106,7 +126,7 @@ const getOrderById = async (req, res, next) => {
 const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({})
-      .populate('user', 'id name email')
+      .populate('user', 'id name email phone')
       .sort({ createdAt: -1 });
     res.json(orders);
   } catch (error) {
@@ -129,6 +149,14 @@ const updateOrderStatus = async (req, res, next) => {
         if (orderStatus === 'Delivered') {
           order.isDelivered = true;
           order.deliveredAt = Date.now();
+        }
+        if (orderStatus === 'Cancelled') {
+          // Restore stock for cancelled orders
+          for (const item of order.orderItems) {
+            await Product.findByIdAndUpdate(item.product, {
+              $inc: { stock: item.quantity }
+            });
+          }
         }
       }
 

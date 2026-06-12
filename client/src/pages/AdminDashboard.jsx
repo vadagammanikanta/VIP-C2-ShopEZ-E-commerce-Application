@@ -26,6 +26,7 @@ const AdminDashboard = () => {
   const [carouselImg3, setCarouselImg3] = useState('');
   const [price, setPrice] = useState('');
   const [discount, setDiscount] = useState('');
+  const [stock, setStock] = useState('100');
   const [category, setCategory] = useState('Electronics');
   const [gender, setGender] = useState('Unisex');
   const [selectedSizes, setSelectedSizes] = useState(['M']);
@@ -47,19 +48,26 @@ const AdminDashboard = () => {
   const gendersList = ['Men', 'Women', 'Unisex'];
   const orderStatuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
-  const loadAllData = async () => {
+  // Cache to avoid re-fetching on every tab change
+  const [dataLoaded, setDataLoaded] = useState(false);
+
+  const loadAllData = async (force = false) => {
+    if (!force && dataLoaded) return;
     setLoading(true);
     try {
       const [prodRes, ordRes, userRes] = await Promise.all([
-        axios.get('/products'),
+        axios.get('/products?limit=100'),
         axios.get('/orders'),
         axios.get('/users'),
       ]);
-      setProducts(prodRes.data);
+      // Handle paginated product response
+      const prodData = prodRes.data;
+      setProducts(Array.isArray(prodData) ? prodData : (prodData.products || []));
       setOrders(ordRes.data);
       setUsers(userRes.data);
+      setDataLoaded(true);
     } catch (err) {
-      console.error('Failed to load admin dashboard statistics data', err);
+      console.error('Failed to load admin dashboard data', err);
     } finally {
       setLoading(false);
     }
@@ -67,7 +75,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     loadAllData();
-  }, [activeTab]);
+  }, []);
 
   const handleOpenAddMode = () => {
     setEditingProduct(null);
@@ -79,6 +87,7 @@ const AdminDashboard = () => {
     setCarouselImg3('');
     setPrice('');
     setDiscount('');
+    setStock('100');
     setCategory('Electronics');
     setGender('Unisex');
     setSelectedSizes(['M']);
@@ -94,7 +103,8 @@ const AdminDashboard = () => {
     setCarouselImg2(product.carousel?.[1] || '');
     setCarouselImg3(product.carousel?.[2] || '');
     setPrice(product.price || '');
-    setDiscount(product.discount || '');
+    setDiscount(product.discount || '0');
+    setStock(product.stock !== undefined ? String(product.stock) : '100');
     setCategory(product.category || 'Electronics');
     setGender(product.gender || 'Unisex');
     setSelectedSizes(product.sizes || []);
@@ -106,7 +116,7 @@ const AdminDashboard = () => {
     try {
       const carousel = [carouselImg1, carouselImg2, carouselImg3].filter(Boolean);
       const payload = {
-        name: title, // maintain compatibility
+        name: title,
         title,
         description,
         price: Number(price),
@@ -115,18 +125,18 @@ const AdminDashboard = () => {
         gender,
         sizes: selectedSizes,
         mainImg,
-        images: [mainImg, ...carousel], // maintain compatibility
+        images: [mainImg, ...carousel].filter(Boolean),
         carousel,
-        stock: 99 // standard default
+        stock: Number(stock || 100),
       };
 
       if (editingProduct) {
         await axios.put(`/products/${editingProduct._id}`, payload);
-        alert('Product details updated successfully!');
       } else {
         await axios.post('/products', payload);
-        alert('Product created successfully!');
       }
+      // Force reload product data after change
+      await loadAllData(true);
       setActiveTab('products');
     } catch (err) {
       console.error(err);
@@ -139,8 +149,7 @@ const AdminDashboard = () => {
     if (!status) return;
     try {
       await axios.put(`/orders/${orderId}`, { orderStatus: status });
-      alert('Order status updated!');
-      loadAllData();
+      await loadAllData(true);
     } catch (err) {
       console.error(err);
       alert('Failed to update status');
@@ -151,11 +160,22 @@ const AdminDashboard = () => {
     if (window.confirm('Are you sure you want to cancel this order?')) {
       try {
         await axios.put(`/orders/${orderId}`, { orderStatus: 'Cancelled' });
-        alert('Order cancelled!');
-        loadAllData();
+        await loadAllData(true);
       } catch (err) {
         console.error(err);
         alert('Failed to cancel order');
+      }
+    }
+  };
+
+  const handleDeleteProduct = async (productId, productName) => {
+    if (window.confirm(`Delete "${productName}"? This cannot be undone.`)) {
+      try {
+        await axios.delete(`/products/${productId}`);
+        await loadAllData(true);
+      } catch (err) {
+        console.error(err);
+        alert(err.response?.data?.message || 'Failed to delete product');
       }
     }
   };
@@ -206,8 +226,9 @@ const AdminDashboard = () => {
 
   const handleUpdateBanner = (e) => {
     e.preventDefault();
-    setBannerSuccess(true);
-    setTimeout(() => setBannerSuccess(false), 3000);
+    if (!bannerUrl) return;
+    // Banner feature placeholder — wire to backend in a future update
+    alert('Banner feature coming soon!');
   };
 
   return (
@@ -594,12 +615,23 @@ const AdminDashboard = () => {
                             )}
                           </div>
 
-                          <button 
-                            onClick={() => handleOpenEditMode(prod)}
-                            style={{ border: '1px solid #ff7a00', color: '#ff7a00', background: 'transparent', padding: '8px', borderRadius: '8px', fontWeight: '500', width: '100%', cursor: 'pointer' }}
-                          >
-                            Update
-                          </button>
+                          <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                            <button 
+                              onClick={() => handleOpenEditMode(prod)}
+                              style={{ border: '1px solid #ff7a00', color: '#ff7a00', background: 'transparent', padding: '8px', borderRadius: '8px', fontWeight: '500', flex: 1, cursor: 'pointer' }}
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button 
+                              onClick={() => handleDeleteProduct(prod._id, prod.title || prod.name)}
+                              style={{ border: '1px solid #ef4444', color: '#ef4444', background: 'transparent', padding: '8px', borderRadius: '8px', fontWeight: '500', flex: 1, cursor: 'pointer' }}
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '6px', textAlign: 'center' }}>
+                            Stock: <strong style={{ color: prod.stock > 10 ? '#10b981' : prod.stock > 0 ? '#f59e0b' : '#ef4444' }}>{prod.stock !== undefined ? prod.stock : 'N/A'}</strong>
+                          </div>
                         </div>
                       );
                     })}
@@ -675,12 +707,13 @@ const AdminDashboard = () => {
                       />
                     </div>
 
-                    {/* Price and Discount inline inputs */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    {/* Price, Discount, Stock inputs */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
                       <div>
+                        <label style={{ display: 'block', fontSize: '12px', color: '#9ca3af', marginBottom: '6px' }}>Price (₹) *</label>
                         <input 
                           type="number" 
-                          placeholder="Price (original)" 
+                          placeholder="e.g. 1999" 
                           required
                           min="0"
                           style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
@@ -689,14 +722,27 @@ const AdminDashboard = () => {
                         />
                       </div>
                       <div>
+                        <label style={{ display: 'block', fontSize: '12px', color: '#9ca3af', marginBottom: '6px' }}>Discount (%)</label>
                         <input 
                           type="number" 
-                          placeholder="Discount (%)" 
+                          placeholder="e.g. 15"
                           min="0"
                           max="100"
                           style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
                           value={discount}
                           onChange={(e) => setDiscount(e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '12px', color: '#9ca3af', marginBottom: '6px' }}>Stock Units *</label>
+                        <input 
+                          type="number" 
+                          placeholder="e.g. 100"
+                          required
+                          min="0"
+                          style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#1f2937', color: '#ffffff' }}
+                          value={stock}
+                          onChange={(e) => setStock(e.target.value)}
                         />
                       </div>
                     </div>

@@ -2,14 +2,17 @@ const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  title: { type: String }, // legacy support
   quantity: { type: Number, required: true },
   price: { type: Number, required: true },
+  size: { type: String, default: '' }, // size/variant support
   image: { type: String },
+  mainImg: { type: String }, // legacy support
   product: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',
     required: true
-  }
+  },
 }, { _id: false });
 
 const orderSchema = new mongoose.Schema({
@@ -26,7 +29,7 @@ const orderSchema = new mongoose.Schema({
     postalCode: { type: String, required: true },
     country: { type: String, required: true }
   },
-  paymentMethod: { type: String, required: true, default: 'Stripe' },
+  paymentMethod: { type: String, required: true, default: 'Cash on Delivery' },
   paymentResult: {
     id: { type: String },
     status: { type: String },
