@@ -149,6 +149,9 @@ const updateOrderStatus = async (req, res, next) => {
         if (orderStatus === 'Delivered') {
           order.isDelivered = true;
           order.deliveredAt = Date.now();
+          // Auto-mark as paid on delivery
+          order.isPaid = true;
+          if (!order.paidAt) order.paidAt = Date.now();
         }
         if (orderStatus === 'Cancelled') {
           // Restore stock for cancelled orders

@@ -143,9 +143,9 @@ const Profile = () => {
                         <td>{itemCount}</td>
                         <td><strong>₹{order.totalPrice.toFixed(2)}</strong></td>
                         <td>
-                          {order.isPaid ? (
+                          {order.isPaid || order.orderStatus === 'Delivered' ? (
                             <span style={{ color: 'var(--success-color)', fontSize: '13px', fontWeight: '600' }}>
-                              Paid ({new Date(order.paidAt).toLocaleDateString()})
+                              Paid ✓
                             </span>
                           ) : (
                             <span style={{ color: 'var(--danger-color)', fontSize: '13px', fontWeight: '600' }}>
