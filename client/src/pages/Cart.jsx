@@ -129,7 +129,7 @@ const Cart = () => {
                   {item.title || item.name}
                 </Link>
                 <div className="cart-item-meta">
-                  Size: <strong>{item.size || 'M'}</strong> | Price: <strong>${item.price.toFixed(2)}</strong>
+                  Size: <strong>{item.size || 'M'}</strong> | Price: <strong>₹{item.price.toFixed(2)}</strong>
                 </div>
               </div>
               <div className="cart-item-qty">
@@ -256,21 +256,21 @@ const Cart = () => {
         <div style={{ marginTop: '20px' }}>
           <div className="summary-row">
             <span>Subtotal</span>
-            <span>${getItemsPrice().toFixed(2)}</span>
+            <span>₹{getItemsPrice().toFixed(2)}</span>
           </div>
           <div className="summary-row">
             <span>Estimated Tax (18% GST)</span>
-            <span>${getTaxPrice().toFixed(2)}</span>
+            <span>₹{getTaxPrice().toFixed(2)}</span>
           </div>
           <div className="summary-row">
             <span>Shipping</span>
             <span>
-              {getShippingPrice() === 0 ? 'FREE' : `$${getShippingPrice().toFixed(2)}`}
+              {getShippingPrice() === 0 ? 'FREE' : `₹${getShippingPrice().toFixed(2)}`}
             </span>
           </div>
           <div className="summary-row summary-total">
             <span>Total</span>
-            <span id="cart-total-price">${getTotalPrice().toFixed(2)}</span>
+            <span id="cart-total-price">₹{getTotalPrice().toFixed(2)}</span>
           </div>
 
           {!checkoutMode && (

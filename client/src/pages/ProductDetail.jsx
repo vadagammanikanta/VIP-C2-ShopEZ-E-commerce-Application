@@ -107,7 +107,7 @@ const ProductDetail = () => {
         </div>
 
         <div className="detail-price-row">
-          <span className="detail-price" id="detail-product-price">${product.price.toFixed(2)}</span>
+          <span className="detail-price" id="detail-product-price">₹{product.price.toFixed(2)}</span>
           <span className="detail-stock in-stock">
             In Stock
           </span>

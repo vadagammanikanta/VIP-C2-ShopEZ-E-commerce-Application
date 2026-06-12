@@ -39,7 +39,7 @@ const ProductCard = ({ product }) => {
 
       <div className="card-footer">
         <span className="card-price" id={`product-price-${product._id}`}>
-          ${product.price.toFixed(2)}
+          ₹{product.price.toFixed(2)}
         </span>
         <button
           onClick={handleQuickAdd}

@@ -57,8 +57,8 @@ const sampleProducts = [
     discount: 35
   },
   {
-    title: "MRF cricket bat",
-    description: "Popular willow wood cricket bat from MRF. Suitable for all format plays in all conditions.",
+    title: "Cricket Ball",
+    description: "High-quality red leather cricket ball for professional matches and practice.",
     mainImg: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80",
     carousel: ["https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=500&q=80"],
     sizes: ["Full Size"],
@@ -68,8 +68,8 @@ const sampleProducts = [
     discount: 23
   },
   {
-    title: "Carrom board",
-    description: "Quality carrom board along with necessary equipment to make your free time more joyful. Includes coins and striker.",
+    title: "Chess Board",
+    description: "Premium quality chess board with beautifully crafted pieces. Perfect for sharpening your strategic skills.",
     mainImg: "https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80",
     carousel: ["https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?w=500&q=80"],
     sizes: ["Large"],
