@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Acceptance Testing (UAT) — ShopEZ MERN Documentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --color-accent: #1a56a0;
+    --color-accent-light: #3b7dd8;
+    --color-text: #1a1a2e;
+    --color-text-muted: #4a5568;
+    --color-border: #c8d3e0;
+    --color-bg-light: #f5f7fa;
+    --color-bg-table-header: #e8edf5;
+    --font-body: 'EB Garamond', 'Times New Roman', serif;
+    --font-ui: 'Inter', sans-serif;
+    --font-code: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  html { font-size: 13pt; }
+  body {
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: #fff;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  /* COVER PAGE */
+  .cover-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #fff;
+    page-break-after: always;
+    padding: 60px 40px;
+    border: 3px solid var(--color-accent);
+    margin: 20mm;
+  }
+  .cover-org { font-family: var(--font-ui); font-size: 0.75rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 48px; }
+  .cover-title { font-size: 2.2rem; font-weight: 700; color: var(--color-accent); line-height: 1.3; margin-bottom: 16px; }
+  .cover-subtitle { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 48px; }
+  .cover-hr { width: 80px; height: 3px; background: var(--color-accent); margin: 0 auto 40px; }
+  .cover-meta { font-family: var(--font-ui); font-size: 0.85rem; color: var(--color-text-muted); line-height: 2.2; }
+  .cover-meta strong { color: var(--color-text); font-weight: 600; }
+
+  /* MAIN CONTENT */
+  .content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20mm 25mm;
+  }
+
+  /* HEADINGS */
+  h1 { font-size: 2rem; font-weight: 700; color: var(--color-accent); border-bottom: 2px solid var(--color-border); padding-bottom: 12px; margin-bottom: 28px; margin-top: 48px; page-break-after: avoid; }
+  h2 { font-size: 1.4rem; font-weight: 600; color: var(--color-text); margin: 36px 0 16px; border-left: 4px solid var(--color-accent); padding-left: 14px; page-break-after: avoid; }
+  h3 { font-size: 1.1rem; font-weight: 600; color: var(--color-accent); margin: 28px 0 12px; page-break-after: avoid; }
+  h4 { font-size: 1rem; font-weight: 600; color: var(--color-text); margin: 20px 0 10px; page-break-after: avoid; }
+
+  /* PARAGRAPHS */
+  p { margin-bottom: 14px; text-align: justify; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-family: var(--font-ui); font-size: 0.78rem; page-break-inside: avoid; }
+  thead tr { background: var(--color-bg-table-header); }
+  th { background: var(--color-accent); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; letter-spacing: 0.3px; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--color-bg-light); }
+  tr:hover td { background: #eef2fa; }
+
+  /* CODE */
+  pre { background: #1e2235; color: #e2e8f0; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 18px 0 24px; font-family: var(--font-code); font-size: 0.75rem; line-height: 1.6; page-break-inside: avoid; }
+  code { font-family: var(--font-code); font-size: 0.82rem; background: #eef2fa; padding: 2px 6px; border-radius: 4px; color: var(--color-accent); }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  /* LISTS */
+  ul, ol { margin: 10px 0 16px 28px; }
+  li { margin-bottom: 6px; }
+
+  /* BLOCKQUOTE */
+  blockquote { border-left: 4px solid var(--color-accent-light); background: var(--color-bg-light); padding: 14px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; font-style: italic; color: var(--color-text-muted); }
+
+  /* DIAGRAM BOX */
+  .diagram-wrap {
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    padding: 20px 16px 10px;
+    margin: 24px 0;
+    background: var(--color-bg-light);
+    page-break-inside: avoid;
+    text-align: center;
+  }
+  .diagram-caption {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* INFO BOX */
+  .info-box { background: #e8f0fb; border: 1px solid var(--color-accent-light); border-left: 5px solid var(--color-accent); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 20px 0; font-family: var(--font-ui); font-size: 0.82rem; }
+  .info-box strong { color: var(--color-accent); }
+
+  /* BADGE */
+  .badge { display: inline-block; font-family: var(--font-ui); font-size: 0.68rem; font-weight: 600; padding: 2px 9px; border-radius: 10px; margin-right: 4px; letter-spacing: 0.3px; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-yellow { background: #fef9c3; color: #92400e; }
+  .badge-green { background: #dcfce7; color: #14532d; }
+  .badge-blue { background: #dbeafe; color: #1e3a8a; }
+
+  /* FOOTER BAR */
+  .doc-footer { font-family: var(--font-ui); font-size: 0.68rem; color: var(--color-text-muted); text-align: center; margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--color-border); }
+
+  /* PRINT */
+  @media print {
+    body { font-size: 11pt; }
+    .cover-page { margin: 0; border: 3px solid var(--color-accent); }
+    .content { padding: 15mm 20mm; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    table, pre, .diagram-wrap { page-break-inside: avoid; }
+    @page { margin: 20mm; }
+  }
+</style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      themeVariables: {
+        primaryColor: '#1a56a0',
+        primaryTextColor: '#1a1a2e',
+        primaryBorderColor: '#1a56a0',
+        lineColor: '#4a5568',
+        secondaryColor: '#e8edf5',
+        tertiaryColor: '#f5f7fa',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '13px'
+      },
+      flowchart: { curve: 'basis', useMaxWidth: true },
+      er: { useMaxWidth: true },
+      sequence: { useMaxWidth: true }
+    });
+  </script>
+
+</head>
+<body>
+
+<div class="cover-page">
+  <div class="cover-org">VIP C2 Programme — Full Stack Development with MERN</div>
+  <h1 class="cover-title" style="font-family:'EB Garamond',serif;font-size:2rem;color:#1a56a0;border:none;padding:0;margin:0 0 12px">User Acceptance Testing (UAT)</h1>
+  <div class="cover-subtitle">ShopEZ — MERN Stack E-commerce Application</div>
+  <div class="cover-hr"></div>
+  <div class="cover-meta">
+    <strong>Phase:</strong> Project Development Phase<br>
+    <strong>Document Version:</strong> 1.1<br>
+    <strong>Date:</strong> 11 June 2026<br>
+    <strong>Prepared by:</strong> V S S S Manikanta<br>
+    <strong>Classification:</strong> Project Documentation — For Academic Submission
+  </div>
+</div>
+
+<div class="content">
+
+<h1>User Acceptance Testing (UAT)</h1>
+
+<h2>1. Introduction</h2>
+<p>This document defines the UAT strategy, process, and test cases for the ShopEZ platform. UAT is the final validation phase confirming that the delivered system meets business requirements and is ready for production release.</p>
+<div class="info-box">
+  <strong>Live Application:</strong> <code>https://e-commerce-application-neon-five.vercel.app/</code><br>
+  <strong>Test Environment:</strong> Chrome v120+ / Edge v120+ (desktop and mobile viewports)
+</div>
+
+<h2>2. UAT Process Flow</h2>
+<div class="diagram-wrap">
+  <pre class="mermaid">
+flowchart TD
+    A(["📋 Review Requirements & User Stories"]) --> B["Prepare UAT Test Cases (Mapped to FR / USN)"]
+    B --> C["Configure Test Environment (Seed DB, Credentials)"]
+    C --> D["Execute Test Cases (Manual / Exploratory)"]
+    D --> E{Pass?}
+    E -->|"✅ All Pass"| F["Document Results & Sign-off"]
+    E -->|"❌ Fail"| G["Raise Defect Report"]
+    G --> H["Developer Fixes Defect"]
+    H --> D
+    F --> I(["🚀 Release Approval"])
+  </pre>
+  <div class="diagram-caption">Figure 10.1 — UAT Process Flowchart</div>
+</div>
+
+<h2>3. Test Credentials</h2>
+<table>
+  <thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead>
+  <tbody>
+    <tr><td>Administrator</td><td><code>admin@shopez.com</code></td><td><code>adminpassword123</code></td></tr>
+    <tr><td>Customer</td><td><code>test@email.com</code></td><td><code>password123</code></td></tr>
+  </tbody>
+</table>
+
+<h2>4. UAT Test Cases</h2>
+<h3>4.1 Authentication Module</h3>
+<table>
+  <thead><tr><th>Test ID</th><th>Scenario</th><th>Steps</th><th>Expected Result</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>UAT-001</td><td>New User Registration</td><td>1. Go to /register. 2. Enter valid name, email, password. 3. Submit.</td><td>Account created; redirected to dashboard; toast shown.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-002</td><td>Duplicate Email Rejection</td><td>1. Register with an already-used email. 2. Submit.</td><td>Error: "User already exists." Registration prevented.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-003</td><td>Valid User Login</td><td>1. Go to /login. 2. Enter valid credentials. 3. Submit.</td><td>JWT set; redirected; Navbar shows user name.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-004</td><td>Invalid Credentials Rejection</td><td>1. Enter wrong password. 2. Submit.</td><td>HTTP 401; error: "Invalid email or password."</td><td>☐ Pass / Fail</td></tr>
+  </tbody>
+</table>
+
+<h3>4.2 Product Discovery Module</h3>
+<table>
+  <thead><tr><th>Test ID</th><th>Scenario</th><th>Steps</th><th>Expected Result</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>UAT-005</td><td>Keyword Search</td><td>1. Enter "Shirt" in search bar. 2. Press Enter.</td><td>Only products containing "Shirt" in name/description displayed.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-006</td><td>Category &amp; Price Filter</td><td>1. Select Category = "Electronics". 2. Set Price = ₹500–₹5,000.</td><td>Only Electronics in the price range displayed.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-007</td><td>Sort Price Ascending</td><td>1. Select Sort = "Price: Low to High".</td><td>Products re-ordered with lowest price first.</td><td>☐ Pass / Fail</td></tr>
+  </tbody>
+</table>
+
+<h3>4.3 Shopping Cart Module</h3>
+<table>
+  <thead><tr><th>Test ID</th><th>Scenario</th><th>Steps</th><th>Expected Result</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>UAT-008</td><td>Add to Cart</td><td>1. Open product page. 2. Select qty=2. 3. Click "Add to Cart".</td><td>Cart badge increments; cart shows item with correct qty and total.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-009</td><td>Update Cart Quantity</td><td>1. Open Cart. 2. Change qty of an item.</td><td>Subtotal and qty update in real time without page reload.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-010</td><td>Remove Item from Cart</td><td>1. Open Cart. 2. Click "Remove".</td><td>Item removed; total recalculated; empty cart message if no items remain.</td><td>☐ Pass / Fail</td></tr>
+  </tbody>
+</table>
+
+<h3>4.4 Checkout &amp; Payment Module</h3>
+<table>
+  <thead><tr><th>Test ID</th><th>Scenario</th><th>Steps</th><th>Expected Result</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>UAT-011</td><td>Full Checkout Flow</td><td>1. Add item. 2. Checkout. 3. Enter shipping. 4. Enter test card <code>4242 4242 4242 4242</code>. 5. Place order.</td><td>Order created; stock deducted; confirmation page shown; order in history.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-012</td><td>Payment Failure Handling</td><td>1. Enter Stripe declined card <code>4000 0000 0000 9995</code> at payment step.</td><td>Error shown; order NOT created; stock NOT deducted.</td><td>☐ Pass / Fail</td></tr>
+  </tbody>
+</table>
+
+<h3>4.5 Admin Operations Module</h3>
+<table>
+  <thead><tr><th>Test ID</th><th>Scenario</th><th>Steps</th><th>Expected Result</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>UAT-013</td><td>Admin Product Creation</td><td>1. Log in as Admin. 2. Admin → Products → "Create". 3. Fill fields &amp; upload image. 4. Submit.</td><td>Product visible in public catalogue; image served from Cloudinary CDN.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-014</td><td>Admin Product Update</td><td>1. Open existing product in Admin. 2. Edit price. 3. Save.</td><td>Updated price reflected on public product page.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-015</td><td>Admin Order Status Update</td><td>1. Admin → Orders. 2. Change order status to "Shipped".</td><td>Status update reflected in customer's order history.</td><td>☐ Pass / Fail</td></tr>
+    <tr><td>UAT-016</td><td>Unauthorised Admin Access</td><td>1. Log in as Customer. 2. Navigate to /admin directly.</td><td>Access denied; customer redirected with appropriate error message.</td><td>☐ Pass / Fail</td></tr>
+  </tbody>
+</table>
+
+<h2>5. Results Summary</h2>
+<table>
+  <thead><tr><th>Module</th><th>Total Tests</th><th>Passed</th><th>Failed</th><th>Pass Rate</th></tr></thead>
+  <tbody>
+    <tr><td>Authentication</td><td>4</td><td></td><td></td><td></td></tr>
+    <tr><td>Product Discovery</td><td>3</td><td></td><td></td><td></td></tr>
+    <tr><td>Shopping Cart</td><td>3</td><td></td><td></td><td></td></tr>
+    <tr><td>Checkout &amp; Payment</td><td>2</td><td></td><td></td><td></td></tr>
+    <tr><td>Admin Operations</td><td>4</td><td></td><td></td><td></td></tr>
+    <tr><td><strong>Total</strong></td><td><strong>16</strong></td><td></td><td></td><td></td></tr>
+  </tbody>
+</table>
+
+<h2>6. UAT Sign-Off</h2>
+<table>
+  <thead><tr><th>Role</th><th>Name</th><th>Signature</th><th>Date</th></tr></thead>
+  <tbody>
+    <tr><td>Development Lead</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr><td>QA Reviewer</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+    <tr><td>Product Owner / Stakeholder</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+  </tbody>
+</table>
+<div class="info-box"><em>We confirm that the ShopEZ application has been tested against all defined User Acceptance criteria and is approved for production release.</em></div>
+
+<div class="doc-footer">ShopEZ MERN E-commerce Application · Project Development Phase · User Acceptance Testing (UAT) · v1.1 · June 2026</div>
+</div>
+
+</body>
+</html>

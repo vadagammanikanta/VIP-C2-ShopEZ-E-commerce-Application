@@ -1,0 +1,121 @@
+<svg version="1.1" baseProfile="full" width="544.0" height="176.0" viewBox="0 0 544 176" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+	<desc >
+	#fill: #e8f4f8
+	#stroke: #0056b3
+	#lineWidth: 2
+	#zoom: 1.2
+	#direction: right
+	
+	[Customer] -&gt; [React SPA | Search]
+	[React SPA | Search] -&gt; [Express API | GET /items]
+	[Express API | GET /items] -&gt; [&lt;database&gt;DB | Query]
+	[&lt;database&gt;DB | Query] -&gt; [Express API | JSON Results]
+	[Express API | JSON Results] -&gt; [React SPA | View Products]
+	
+	[Customer] -&gt; [React SPA | Checkout]
+	[React SPA | Checkout] -&gt; [Express API | POST /order]
+	[Express API | POST /order] -&gt; [&lt;database&gt;DB | Save Order]
+	[&lt;database&gt;DB | Save Order] -&gt; [Express API | 201 Created]
+	[Express API | 201 Created] -&gt; [React SPA | Success Confirmation]
+	</desc>
+	<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
+		<g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round" stroke="#0056b3">
+			<g stroke="transparent" fill="transparent">
+				<rect x="0.0" y="0.0" height="176.0" width="544.0" stroke="none"></rect>
+			</g>
+			<g transform="translate(8, 28)" fill="#0056b3">
+				<g transform="translate(20, 20)" fill="#0056b3" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+					<path d="M92.0 26.1 L112 20 L125.58984034906118 23.882811528303193 L125.6 23.9 " fill="none"></path>
+					<path d="M117.7 27.2 L125.6 23.9 L120.6 16.9 L132.0 25.7 Z"></path>
+					<path d="M219.3 8.0 L252 -20 L282.2341148964438 3.869038076139865 L282.2 3.9 " fill="none"></path>
+					<path d="M273.7 3.9 L282.2 3.9 L280.3 -4.4 L287.5 8.0 Z"></path>
+					<path d="M368.5 8.0 L404 -20 L419.63379641054775 -1.9610041416757031 L419.6 -2.0 " fill="none"></path>
+					<path d="M411.2 -3.5 L419.6 -2.0 L419.3 -10.5 L424.0 3.1 Z"></path>
+					<path d="M424.0 52.3 L404 60 L390.447163581751 56.43346410046078 L390.4 56.4 " fill="none"></path>
+					<path d="M398.3 53.0 L390.4 56.4 L395.5 63.3 L384.0 54.7 Z"></path>
+					<path d="M272.0 54.7 L252 60 L238.41015965093882 56.11718847169681 L238.4 56.1 " fill="none"></path>
+					<path d="M246.3 52.8 L238.4 56.1 L243.4 63.1 L232.0 54.3 Z"></path>
+					<path d="M92.0 53.9 L112 60 L125.58984034906118 56.11718847169681 L125.6 56.1 " fill="none"></path>
+					<path d="M120.6 63.1 L125.6 56.1 L117.7 52.8 L132.0 54.3 Z"></path>
+					<path d="M232.0 25.7 L252 20 L265.552836418249 23.56653589953922 L265.6 23.6 " fill="none"></path>
+					<path d="M257.7 27.0 L265.6 23.6 L260.5 16.7 L272.0 25.3 Z"></path>
+					<path d="M384.0 25.3 L404 20 L417.7776959586463 25.299113830248565 L417.8 25.3 " fill="none"></path>
+					<path d="M409.6 27.9 L417.8 25.3 L413.5 17.9 L424.0 27.7 Z"></path>
+					<path d="M424.0 76.9 L404 100 L373.7658851035562 76.13096192386014 L373.8 76.1 " fill="none"></path>
+					<path d="M382.3 76.1 L373.8 76.1 L375.7 84.4 L368.5 72.0 Z"></path>
+					<path d="M287.5 72.0 L252 100 L224.39504401576866 76.33860915637312 L224.4 76.3 " fill="none"></path>
+					<path d="M232.9 76.6 L224.4 76.3 L226.0 84.7 L219.3 72.0 Z"></path>
+					<g data-name="Customer">
+						<g fill="#e8f4f8" stroke="#0056b3" data-name="Customer">
+							<rect x="0.0" y="24.0" height="32.0" width="92.0" data-name="Customer"></rect>
+						</g>
+						<g transform="translate(0, 24)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Customer" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#0056b3" text-align="center" data-name="Customer" data-compartment="0">
+								<text x="38.0" y="14.1" stroke="none" text-anchor="middle" data-name="Customer" data-compartment="0">Customer</text>
+								
+							</g>
+						</g>
+					</g>
+					<g data-name="React SPA">
+						<g fill="#e8f4f8" stroke="#0056b3" data-name="React SPA">
+							<rect x="132.0" y="8.0" height="64.0" width="100.0" data-name="React SPA"></rect>
+							<path d="M132.0 40.0 L232.0 40.0" fill="none" data-name="React SPA"></path>
+						</g>
+						<g transform="translate(132, 8)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="React SPA" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#0056b3" text-align="center" data-name="React SPA" data-compartment="0">
+								<text x="42.0" y="14.1" stroke="none" text-anchor="middle" data-name="React SPA" data-compartment="0">React SPA</text>
+								
+							</g>
+						</g>
+						<g transform="translate(132, 40)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="React SPA" data-compartment="1">
+							<g transform="translate(8, 8)" fill="#0056b3" text-align="left" data-name="React SPA" data-compartment="1">
+								<text x="0.0" y="14.1" stroke="none" data-name="React SPA" data-compartment="1">Search</text>
+								
+							</g>
+						</g>
+					</g>
+					<g data-name="Express API">
+						<g fill="#e8f4f8" stroke="#0056b3" data-name="Express API">
+							<rect x="272.0" y="8.0" height="64.0" width="112.0" data-name="Express API"></rect>
+							<path d="M272.0 40.0 L384.0 40.0" fill="none" data-name="Express API"></path>
+						</g>
+						<g transform="translate(272, 8)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Express API" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#0056b3" text-align="center" data-name="Express API" data-compartment="0">
+								<text x="48.0" y="14.1" stroke="none" text-anchor="middle" data-name="Express API" data-compartment="0">Express API</text>
+								
+							</g>
+						</g>
+						<g transform="translate(272, 40)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Express API" data-compartment="1">
+							<g transform="translate(8, 8)" fill="#0056b3" text-align="left" data-name="Express API" data-compartment="1">
+								<text x="0.0" y="14.1" stroke="none" data-name="Express API" data-compartment="1">GET /items</text>
+								
+							</g>
+						</g>
+					</g>
+					<g data-name="DB">
+						<g fill="#e8f4f8" stroke="#0056b3" data-name="DB">
+							<rect x="424.0" y="8.0" height="64.0" width="64.0" stroke="none" data-name="DB"></rect>
+							<path d="M424.0 8.0 L424.0 72.0" fill="none" data-name="DB"></path>
+							<path d="M488.0 8.0 L488.0 72.0" fill="none" data-name="DB"></path>
+							<ellipse cx="456.0" cy="8.0" rx="32.0" ry="6.0" data-name="DB"></ellipse>
+							<path d="M488.0 72.0 L488.0 72.3 L487.8 72.6 L487.6 72.9 L487.4 73.2 L487.0 73.5 L486.6 73.8 L486.1 74.1 L485.5 74.3 L484.8 74.6 L484.1 74.9 L483.3 75.1 L482.4 75.4 L481.5 75.6 L480.5 75.9 L479.5 76.1 L478.3 76.3 L477.2 76.5 L476.0 76.7 L474.7 76.9 L473.4 77.0 L472.0 77.2 L470.6 77.3 L469.2 77.5 L467.7 77.6 L466.2 77.7 L464.7 77.8 L463.1 77.8 L461.6 77.9 L460.0 78.0 L458.4 78.0 L456.8 78.0 L455.2 78.0 L453.6 78.0 L452.0 78.0 L450.4 77.9 L448.9 77.8 L447.3 77.8 L445.8 77.7 L444.3 77.6 L442.8 77.5 L441.4 77.3 L440.0 77.2 L438.6 77.0 L437.3 76.9 L436.0 76.7 L434.8 76.5 L433.7 76.3 L432.5 76.1 L431.5 75.9 L430.5 75.6 L429.6 75.4 L428.7 75.1 L427.9 74.9 L427.2 74.6 L426.5 74.3 L425.9 74.1 L425.4 73.8 L425.0 73.5 L424.6 73.2 L424.4 72.9 L424.2 72.6 L424.0 72.3 L424.0 72.0" data-name="DB"></path>
+							<path d="M424.0 40.0 L424.7 41.2 L426.8 42.4 L430.1 43.5 L434.6 44.5 L440.0 45.2 L446.1 45.7 L452.7 46.0 L459.3 46.0 L465.9 45.7 L472.0 45.2 L477.4 44.5 L481.9 43.5 L485.2 42.4 L487.3 41.2 L488.0 40.0" fill="none" data-name="DB"></path>
+						</g>
+						<g transform="translate(424, 12)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="DB" data-compartment="0">
+							<g transform="translate(8, 8)" fill="#0056b3" text-align="center" data-name="DB" data-compartment="0">
+								<text x="24.0" y="14.1" stroke="none" text-anchor="middle" data-name="DB" data-compartment="0">DB</text>
+								
+							</g>
+						</g>
+						<g transform="translate(424, 44)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="DB" data-compartment="1">
+							<g transform="translate(8, 8)" fill="#0056b3" text-align="center" data-name="DB" data-compartment="1">
+								<text x="24.0" y="14.1" stroke="none" text-anchor="middle" data-name="DB" data-compartment="1">Query</text>
+								
+							</g>
+						</g>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

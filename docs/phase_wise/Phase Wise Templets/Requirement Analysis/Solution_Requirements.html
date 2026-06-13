@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solution Requirements — ShopEZ MERN Documentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --color-accent: #1a56a0;
+    --color-accent-light: #3b7dd8;
+    --color-text: #1a1a2e;
+    --color-text-muted: #4a5568;
+    --color-border: #c8d3e0;
+    --color-bg-light: #f5f7fa;
+    --color-bg-table-header: #e8edf5;
+    --font-body: 'EB Garamond', 'Times New Roman', serif;
+    --font-ui: 'Inter', sans-serif;
+    --font-code: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  html { font-size: 13pt; }
+  body {
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background: #fff;
+    line-height: 1.75;
+    margin: 0;
+  }
+
+  /* COVER PAGE */
+  .cover-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: #fff;
+    page-break-after: always;
+    padding: 60px 40px;
+    border: 3px solid var(--color-accent);
+    margin: 20mm;
+  }
+  .cover-org { font-family: var(--font-ui); font-size: 0.75rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 48px; }
+  .cover-title { font-size: 2.2rem; font-weight: 700; color: var(--color-accent); line-height: 1.3; margin-bottom: 16px; }
+  .cover-subtitle { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 48px; }
+  .cover-hr { width: 80px; height: 3px; background: var(--color-accent); margin: 0 auto 40px; }
+  .cover-meta { font-family: var(--font-ui); font-size: 0.85rem; color: var(--color-text-muted); line-height: 2.2; }
+  .cover-meta strong { color: var(--color-text); font-weight: 600; }
+
+  /* MAIN CONTENT */
+  .content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20mm 25mm;
+  }
+
+  /* HEADINGS */
+  h1 { font-size: 2rem; font-weight: 700; color: var(--color-accent); border-bottom: 2px solid var(--color-border); padding-bottom: 12px; margin-bottom: 28px; margin-top: 48px; page-break-after: avoid; }
+  h2 { font-size: 1.4rem; font-weight: 600; color: var(--color-text); margin: 36px 0 16px; border-left: 4px solid var(--color-accent); padding-left: 14px; page-break-after: avoid; }
+  h3 { font-size: 1.1rem; font-weight: 600; color: var(--color-accent); margin: 28px 0 12px; page-break-after: avoid; }
+  h4 { font-size: 1rem; font-weight: 600; color: var(--color-text); margin: 20px 0 10px; page-break-after: avoid; }
+
+  /* PARAGRAPHS */
+  p { margin-bottom: 14px; text-align: justify; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 20px 0 28px; font-family: var(--font-ui); font-size: 0.78rem; page-break-inside: avoid; }
+  thead tr { background: var(--color-bg-table-header); }
+  th { background: var(--color-accent); color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; letter-spacing: 0.3px; }
+  td { padding: 9px 12px; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--color-bg-light); }
+  tr:hover td { background: #eef2fa; }
+
+  /* CODE */
+  pre { background: #1e2235; color: #e2e8f0; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 18px 0 24px; font-family: var(--font-code); font-size: 0.75rem; line-height: 1.6; page-break-inside: avoid; }
+  code { font-family: var(--font-code); font-size: 0.82rem; background: #eef2fa; padding: 2px 6px; border-radius: 4px; color: var(--color-accent); }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  /* LISTS */
+  ul, ol { margin: 10px 0 16px 28px; }
+  li { margin-bottom: 6px; }
+
+  /* BLOCKQUOTE */
+  blockquote { border-left: 4px solid var(--color-accent-light); background: var(--color-bg-light); padding: 14px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; font-style: italic; color: var(--color-text-muted); }
+
+  /* DIAGRAM BOX */
+  .diagram-wrap {
+    border: 1.5px solid var(--color-border);
+    border-radius: 10px;
+    padding: 20px 16px 10px;
+    margin: 24px 0;
+    background: var(--color-bg-light);
+    page-break-inside: avoid;
+    text-align: center;
+  }
+  .diagram-caption {
+    font-family: var(--font-ui);
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* INFO BOX */
+  .info-box { background: #e8f0fb; border: 1px solid var(--color-accent-light); border-left: 5px solid var(--color-accent); border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 20px 0; font-family: var(--font-ui); font-size: 0.82rem; }
+  .info-box strong { color: var(--color-accent); }
+
+  /* BADGE */
+  .badge { display: inline-block; font-family: var(--font-ui); font-size: 0.68rem; font-weight: 600; padding: 2px 9px; border-radius: 10px; margin-right: 4px; letter-spacing: 0.3px; }
+  .badge-red { background: #fee2e2; color: #991b1b; }
+  .badge-yellow { background: #fef9c3; color: #92400e; }
+  .badge-green { background: #dcfce7; color: #14532d; }
+  .badge-blue { background: #dbeafe; color: #1e3a8a; }
+
+  /* FOOTER BAR */
+  .doc-footer { font-family: var(--font-ui); font-size: 0.68rem; color: var(--color-text-muted); text-align: center; margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--color-border); }
+
+  /* PRINT */
+  @media print {
+    body { font-size: 11pt; }
+    .cover-page { margin: 0; border: 3px solid var(--color-accent); }
+    .content { padding: 15mm 20mm; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    table, pre, .diagram-wrap { page-break-inside: avoid; }
+    @page { margin: 20mm; }
+  }
+</style>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      themeVariables: {
+        primaryColor: '#1a56a0',
+        primaryTextColor: '#1a1a2e',
+        primaryBorderColor: '#1a56a0',
+        lineColor: '#4a5568',
+        secondaryColor: '#e8edf5',
+        tertiaryColor: '#f5f7fa',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '13px'
+      },
+      flowchart: { curve: 'basis', useMaxWidth: true },
+      er: { useMaxWidth: true },
+      sequence: { useMaxWidth: true }
+    });
+  </script>
+
+</head>
+<body>
+
+<div class="cover-page">
+  <div class="cover-org">VIP C2 Programme — Full Stack Development with MERN</div>
+  <h1 class="cover-title" style="font-family:'EB Garamond',serif;font-size:2rem;color:#1a56a0;border:none;padding:0;margin:0 0 12px">Solution Requirements</h1>
+  <div class="cover-subtitle">ShopEZ — MERN Stack E-commerce Application</div>
+  <div class="cover-hr"></div>
+  <div class="cover-meta">
+    <strong>Phase:</strong> Requirement Analysis Phase<br>
+    <strong>Document Version:</strong> 1.1<br>
+    <strong>Date:</strong> 11 June 2026<br>
+    <strong>Prepared by:</strong> V S S S Manikanta<br>
+    <strong>Classification:</strong> Project Documentation — For Academic Submission
+  </div>
+</div>
+
+<div class="content">
+
+<h1>Solution Requirements</h1>
+
+<h2>1. Introduction</h2>
+<p>This document specifies the complete set of <strong>Functional</strong> and <strong>Non-Functional Requirements</strong> for the ShopEZ e-commerce platform. Each requirement is assigned a unique identifier to enable traceability from inception through design, implementation, and User Acceptance Testing (UAT).</p>
+
+<h2>2. Functional Requirements</h2>
+<h3>FR-01 to FR-05 — User Management</h3>
+<table>
+  <thead><tr><th>Req. ID</th><th>Requirement Description</th><th>Priority</th><th>USN</th></tr></thead>
+  <tbody>
+    <tr><td>FR-01</td><td>The system shall permit new users to register by providing a unique email address, full name, and password. Email must be validated for format correctness.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-1</td></tr>
+    <tr><td>FR-02</td><td>The system shall authenticate registered users via email and password credentials and issue a signed JWT token upon success.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-2</td></tr>
+    <tr><td>FR-03</td><td>The system shall store JWT tokens exclusively in HTTP-only cookies to prevent client-side JavaScript access (XSS mitigation).</td><td><span class="badge badge-red">Must Have</span></td><td>USN-2</td></tr>
+    <tr><td>FR-04</td><td>The system shall enforce Role-Based Access Control (RBAC) distinguishing between the <code>user</code> and <code>admin</code> roles.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-0</td></tr>
+    <tr><td>FR-05</td><td>Authenticated users shall be able to update their profile including name, password, phone number, and saved shipping addresses.</td><td><span class="badge badge-yellow">Should Have</span></td><td>USN-1</td></tr>
+  </tbody>
+</table>
+
+<h3>FR-06 to FR-10 — Product Catalogue</h3>
+<table>
+  <thead><tr><th>Req. ID</th><th>Requirement Description</th><th>Priority</th><th>USN</th></tr></thead>
+  <tbody>
+    <tr><td>FR-06</td><td>The system shall display a paginated catalogue of products presenting name, image, description, price, rating, and stock availability.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-3</td></tr>
+    <tr><td>FR-07</td><td>The system shall provide full-text search allowing customers to query products by name and description keywords.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-3</td></tr>
+    <tr><td>FR-08</td><td>The system shall support dynamic filtering by Category, Price Range, and Average Star Rating.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-3</td></tr>
+    <tr><td>FR-09</td><td>The system shall support sorting by: Newest First, Price Ascending, Price Descending, and Highest Rated.</td><td><span class="badge badge-yellow">Should Have</span></td><td>USN-3</td></tr>
+    <tr><td>FR-10</td><td>Administrators shall be able to Create, Read, Update, and Delete product records, including uploading images via Cloudinary.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-8</td></tr>
+  </tbody>
+</table>
+
+<h3>FR-11 to FR-15 — Shopping Cart &amp; Checkout</h3>
+<table>
+  <thead><tr><th>Req. ID</th><th>Requirement Description</th><th>Priority</th><th>USN</th></tr></thead>
+  <tbody>
+    <tr><td>FR-11</td><td>The system shall allow authenticated users to add products to a persistent shopping cart stored in MongoDB.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-4</td></tr>
+    <tr><td>FR-12</td><td>The system shall allow users to modify item quantities and remove items; the cart total shall recalculate in real time.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-4</td></tr>
+    <tr><td>FR-13</td><td>The system shall present a guided, multi-step checkout: (1) Shipping Address → (2) Payment Method → (3) Order Review &amp; Placement.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-5</td></tr>
+    <tr><td>FR-14</td><td>The system shall integrate with a Payment Gateway (Stripe / Razorpay) to securely process card and UPI-based transactions.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-6</td></tr>
+    <tr><td>FR-15</td><td>Upon successful payment, the system shall create an order record, deduct purchased quantities from stock, and clear the user's cart.</td><td><span class="badge badge-red">Must Have</span></td><td>USN-6</td></tr>
+  </tbody>
+</table>
+
+<h2>3. Non-Functional Requirements</h2>
+<table>
+  <thead><tr><th>Req. ID</th><th>Category</th><th>Requirement Description</th><th>Priority</th></tr></thead>
+  <tbody>
+    <tr><td>NFR-01</td><td>Security</td><td>All user passwords must be hashed using Bcrypt (salt rounds ≥ 10) prior to persistence.</td><td><span class="badge badge-red">Must Have</span></td></tr>
+    <tr><td>NFR-02</td><td>Security</td><td>All API routes that modify data must require a valid JWT; unauthenticated requests shall return HTTP 401.</td><td><span class="badge badge-red">Must Have</span></td></tr>
+    <tr><td>NFR-03</td><td>Security</td><td>Admin-only routes shall apply an additional <code>isAdmin</code> middleware check; non-admin access returns HTTP 403.</td><td><span class="badge badge-red">Must Have</span></td></tr>
+    <tr><td>NFR-04</td><td>Performance</td><td>Product catalogue API responses must be returned within 500ms under normal load conditions.</td><td><span class="badge badge-yellow">Should Have</span></td></tr>
+    <tr><td>NFR-05</td><td>Performance</td><td>All product images must be served via the Cloudinary CDN to ensure sub-second image load times globally.</td><td><span class="badge badge-yellow">Should Have</span></td></tr>
+    <tr><td>NFR-06</td><td>Usability</td><td>The frontend must be fully responsive from 320px (mobile) to 1920px (desktop).</td><td><span class="badge badge-red">Must Have</span></td></tr>
+    <tr><td>NFR-07</td><td>Reliability</td><td>MongoDB's document atomicity must ensure stock deduction and order creation are performed consistently, preventing overselling.</td><td><span class="badge badge-red">Must Have</span></td></tr>
+    <tr><td>NFR-08</td><td>Maintainability</td><td>All backend code must follow MVC pattern: Router → Middleware → Controller → Model. No business logic in route handlers.</td><td><span class="badge badge-yellow">Should Have</span></td></tr>
+    <tr><td>NFR-09</td><td>Scalability</td><td>The stateless JWT model shall ensure the API can be horizontally scaled without shared session state.</td><td><span class="badge badge-green">Could Have</span></td></tr>
+  </tbody>
+</table>
+
+<h2>4. Requirements Traceability Matrix</h2>
+<table>
+  <thead><tr><th>Req. ID</th><th>Design Artefact</th><th>Implementation File</th><th>UAT Test Case</th></tr></thead>
+  <tbody>
+    <tr><td>FR-01, FR-02, FR-03</td><td>Solution Architecture</td><td><code>userController.js</code></td><td>UAT-001, UAT-002</td></tr>
+    <tr><td>FR-06, FR-07, FR-08</td><td>Data Flow Diagram</td><td><code>productController.js</code></td><td>UAT-005, UAT-006</td></tr>
+    <tr><td>FR-11, FR-12</td><td>ER Diagram</td><td><code>Cart.js</code> model</td><td>UAT-008, UAT-009</td></tr>
+    <tr><td>FR-13, FR-14, FR-15</td><td>User Flow Sequence</td><td><code>orderController.js</code></td><td>UAT-011, UAT-012</td></tr>
+    <tr><td>FR-10</td><td>Solution Architecture</td><td><code>productController.js</code></td><td>UAT-013</td></tr>
+    <tr><td>NFR-01, NFR-02</td><td>Solution Architecture</td><td><code>authMiddleware.js</code></td><td>UAT-004, UAT-016</td></tr>
+  </tbody>
+</table>
+
+<div class="doc-footer">ShopEZ MERN E-commerce Application · Requirement Analysis Phase · Solution Requirements · v1.1 · June 2026</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<svg version="1.1" baseProfile="full" width="582.0" height="524.0" viewBox="0 0 582 524" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+	<desc >
+	#fill: #f4f4f4
+	#stroke: #333333
+	#lineWidth: 2
+	#zoom: 1.5
+	#spacing: 40
+	#padding: 20
+	
+	[&lt;actor&gt;Client Browser] -&gt; [Node.js + Express API]
+	[Node.js + Express API] -&gt; [Auth / JWT Middleware]
+	[Node.js + Express API] -&gt; [Controllers]
+	[Controllers] -&gt; [&lt;database&gt;MongoDB Atlas]
+	[Controllers] -&gt; [Cloudinary API]
+	</desc>
+	<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="bold" font-style="normal">
+		<g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="round" stroke="#333333">
+			<g stroke="transparent" fill="transparent">
+				<rect x="0.0" y="0.0" height="524.0" width="582.0" stroke="none"></rect>
+			</g>
+			<g transform="translate(20, 20)" fill="#333333">
+				<g transform="translate(20, 20)" fill="#333333" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+					<path d="M217.3 116.0 L217.25 136 L217.25 149.33333333333334 L217.3 149.3 " fill="none"></path>
+					<path d="M211.9 142.7 L217.3 149.3 L222.6 142.7 L217.3 156.0 Z"></path>
+					<path d="M155.0 212.0 L110.5 232 L110.5 245.33333333333334 L110.5 245.3 " fill="none"></path>
+					<path d="M105.2 238.7 L110.5 245.3 L115.8 238.7 L110.5 252.0 Z"></path>
+					<path d="M279.5 212.0 L324 232 L324 245.33333333333334 L324.0 245.3 " fill="none"></path>
+					<path d="M318.7 238.7 L324.0 245.3 L329.3 238.7 L324.0 252.0 Z"></path>
+					<path d="M266.0 308.0 L224.5 328 L224.5 341.3333333333333 L224.5 341.3 " fill="none"></path>
+					<path d="M219.2 334.7 L224.5 341.3 L229.8 334.7 L224.5 348.0 Z"></path>
+					<path d="M382.0 308.0 L423.5 328 L423.5 361.3333333333333 L423.5 361.3 " fill="none"></path>
+					<path d="M418.2 354.7 L423.5 361.3 L428.8 354.7 L423.5 368.0 Z"></path>
+					<g data-name="Client Browser">
+						<g fill="#f4f4f4" stroke="#333333" data-name="Client Browser">
+							<circle r="10.0" cx="217.3" cy="30.0" data-name="Client Browser"></circle>
+							<path d="M217.3 40.0 L217.3 60.0" fill="none" data-name="Client Browser"></path>
+							<path d="M207.3 50.0 L227.3 50.0" fill="none" data-name="Client Browser"></path>
+							<path d="M207.3 70.0 L217.3 60.0 L227.3 70.0" fill="none" data-name="Client Browser"></path>
+						</g>
+						<g transform="translate(140.25, 60)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Client Browser" data-compartment="0">
+							<g transform="translate(20, 20)" fill="#333333" text-align="center" data-name="Client Browser" data-compartment="0">
+								<text x="57.0" y="14.1" stroke="none" text-anchor="middle" data-name="Client Browser" data-compartment="0">Client Browser</text>
+								
+							</g>
+						</g>
+					</g>
+					<g data-name="Node.js + Express API">
+						<g fill="#f4f4f4" stroke="#333333" data-name="Node.js + Express API">
+							<rect x="109.3" y="156.0" height="56.0" width="216.0" data-name="Node.js + Express API"></rect>
+						</g>
+						<g transform="translate(109.25, 156)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Node.js + Express API" data-compartment="0">
+							<g transform="translate(20, 20)" fill="#333333" text-align="center" data-name="Node.js + Express API" data-compartment="0">
+								<text x="88.0" y="14.1" stroke="none" text-anchor="middle" data-name="Node.js + Express API" data-compartment="0">Node.js + Express API</text>
+								
+							</g>
+						</g>
+					</g>
+					<g data-name="Auth / JWT Middleware">
+						<g fill="#f4f4f4" stroke="#333333" data-name="Auth / JWT Middleware">
+							<rect x="0.0" y="252.0" height="56.0" width="221.0" data-name="Auth / JWT Middleware"></rect>
+						</g>
+						<g transform="translate(0, 252)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Auth / JWT Middleware" data-compartment="0">
+							<g transform="translate(20, 20)" fill="#333333" text-align="center" data-name="Auth / JWT Middleware" data-compartment="0">
+								<text x="90.5" y="14.1" stroke="none" text-anchor="middle" data-name="Auth / JWT Middleware" data-compartment="0">Auth / JWT Middleware</text>
+								
+							</g>
+						</g>
+					</g>
+					<g data-name="Controllers">
+						<g fill="#f4f4f4" stroke="#333333" data-name="Controllers">
+							<rect x="261.0" y="252.0" height="56.0" width="126.0" data-name="Controllers"></rect>
+						</g>
+						<g transform="translate(261, 252)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Controllers" data-compartment="0">
+							<g transform="translate(20, 20)" fill="#333333" text-align="center" data-name="Controllers" data-compartment="0">
+								<text x="43.0" y="14.1" stroke="none" text-anchor="middle" data-name="Controllers" data-compartment="0">Controllers</text>
+								
+							</g>
+						</g>
+					</g>
+					<g data-name="MongoDB Atlas">
+						<g fill="#f4f4f4" stroke="#333333" data-name="MongoDB Atlas">
+							<rect x="144.0" y="368.0" height="56.0" width="161.0" stroke="none" data-name="MongoDB Atlas"></rect>
+							<path d="M144.0 368.0 L144.0 424.0" fill="none" data-name="MongoDB Atlas"></path>
+							<path d="M305.0 368.0 L305.0 424.0" fill="none" data-name="MongoDB Atlas"></path>
+							<ellipse cx="224.5" cy="368.0" rx="80.5" ry="15.0" data-name="MongoDB Atlas"></ellipse>
+							<path d="M305.0 424.0 L304.9 424.7 L304.6 425.5 L304.1 426.2 L303.4 427.0 L302.5 427.7 L301.4 428.4 L300.1 429.1 L298.7 429.8 L297.0 430.5 L295.2 431.2 L293.2 431.8 L291.0 432.4 L288.7 433.1 L286.2 433.6 L283.5 434.2 L280.7 434.7 L277.8 435.2 L274.7 435.7 L271.5 436.2 L268.2 436.6 L264.7 437.0 L261.2 437.3 L257.6 437.7 L253.9 438.0 L250.1 438.2 L246.3 438.4 L242.4 438.6 L238.5 438.8 L234.5 438.9 L230.5 439.0 L226.5 439.0 L222.5 439.0 L218.5 439.0 L214.5 438.9 L210.5 438.8 L206.6 438.6 L202.7 438.4 L198.9 438.2 L195.1 438.0 L191.4 437.7 L187.8 437.3 L184.2 437.0 L180.8 436.6 L177.5 436.2 L174.3 435.7 L171.2 435.2 L168.3 434.7 L165.5 434.2 L162.8 433.6 L160.3 433.1 L158.0 432.4 L155.8 431.8 L153.8 431.2 L152.0 430.5 L150.3 429.8 L148.9 429.1 L147.6 428.4 L146.5 427.7 L145.6 427.0 L144.9 426.2 L144.4 425.5 L144.1 424.7 L144.0 424.0" data-name="MongoDB Atlas"></path>
+						</g>
+						<g transform="translate(144, 378)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MongoDB Atlas" data-compartment="0">
+							<g transform="translate(20, 20)" fill="#333333" text-align="center" data-name="MongoDB Atlas" data-compartment="0">
+								<text x="60.5" y="14.1" stroke="none" text-anchor="middle" data-name="MongoDB Atlas" data-compartment="0">MongoDB Atlas</text>
+								
+							</g>
+						</g>
+					</g>
+					<g data-name="Cloudinary API">
+						<g fill="#f4f4f4" stroke="#333333" data-name="Cloudinary API">
+							<rect x="345.0" y="368.0" height="56.0" width="157.0" data-name="Cloudinary API"></rect>
+						</g>
+						<g transform="translate(345, 368)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Cloudinary API" data-compartment="0">
+							<g transform="translate(20, 20)" fill="#333333" text-align="center" data-name="Cloudinary API" data-compartment="0">
+								<text x="58.5" y="14.1" stroke="none" text-anchor="middle" data-name="Cloudinary API" data-compartment="0">Cloudinary API</text>
+								
+							</g>
+						</g>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>
