@@ -163,6 +163,114 @@
   /* FOOTER BAR */
   .doc-footer { font-family: var(--font-ui); font-size: 0.68rem; color: var(--color-text-muted); text-align: center; margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--color-border); }
 
+  /* CUSTOM QUADRANT CHART */
+  .quadrant-chart-container {
+    max-width: 600px;
+    margin: 30px auto;
+    font-family: var(--font-ui);
+    text-align: center;
+    background: var(--color-bg-light);
+    border: 1.5px solid var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .quadrant-chart-grid {
+    position: relative;
+    width: 460px;
+    height: 360px;
+    margin: 15px auto;
+    border: 2px solid var(--color-border);
+    background: #fff;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .quadrant-cell {
+    position: relative;
+    padding: 10px;
+  }
+  .q-top-left { background: #fcfdfe; border-right: 1px dashed #e2e8f0; border-bottom: 1px dashed #e2e8f0; }
+  .q-top-right { background: #f8fafc; border-bottom: 1px dashed #e2e8f0; }
+  .q-bottom-left { background: #fffdfa; border-right: 1px dashed #e2e8f0; }
+  .q-bottom-right { background: #f0fdf4; }
+
+  .quadrant-label {
+    position: absolute;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.9);
+    border: 0.5px solid var(--color-border);
+  }
+  .q-top-left .quadrant-label { top: 8px; left: 8px; color: #991b1b; border-color: #fca5a5; }
+  .q-top-right .quadrant-label { top: 8px; right: 8px; color: #1e3a8a; border-color: #bfdbfe; }
+  .q-bottom-left .quadrant-label { bottom: 8px; left: 8px; color: #9a3412; border-color: #ffedd5; }
+  .q-bottom-right .quadrant-label { bottom: 8px; right: 8px; color: #14532d; border-color: #a7f3d0; }
+
+  .axis-x-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: var(--color-border);
+    z-index: 5;
+  }
+  .axis-y-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--color-border);
+    z-index: 5;
+  }
+
+  .axis-label {
+    position: absolute;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    z-index: 10;
+  }
+  .axis-top { top: -12px; left: 50%; transform: translateX(-50%); }
+  .axis-bottom { bottom: -12px; left: 50%; transform: translateX(-50%); }
+  .axis-left { left: -60px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+  .axis-right { right: -60px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+
+  .chart-point {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+  }
+  .point-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  }
+  .point-text {
+    margin-left: 6px;
+    font-size: 0.58rem;
+    font-weight: 500;
+    color: var(--color-text);
+    background: rgba(255,255,255,0.9);
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 0.5px solid rgba(0,0,0,0.1);
+    white-space: nowrap;
+  }
+
   /* PRINT */
   @media print {
     body { font-size: 11pt; }
@@ -229,27 +337,81 @@
 </div>
 
 <h3>2.1 Empathy Map — Quadrant Chart</h3>
-<div class="diagram-wrap">
-  <pre class="mermaid">
-quadrantChart
-    title "Empathy Map - The Convenience-Seeking Shopper"
-    x-axis "Negative Experience" --> "Positive Experience"
-    y-axis "Internal (Think and Feel)" --> "External (Say and Do)"
-    quadrant-1 "Say and Do (Positive)"
-    quadrant-2 "Think and Feel (Positive)"
-    quadrant-3 "Think and Feel (Negative)"
-    quadrant-4 "Say and Do (Negative)"
-    "Filters by price and rating": [0.80, 0.70]
-    "Saves cart for later purchase": [0.75, 0.80]
-    "Reads product reviews first": [0.85, 0.65]
-    "Feels secure with trusted payments": [0.70, 0.35]
-    "Expects fast, accurate search": [0.65, 0.25]
-    "Anxious about hidden fees": [0.30, 0.20]
-    "Worried about card data safety": [0.25, 0.30]
-    "Frustrated by slow loading": [0.20, 0.75]
-    "Abandons cart if too many steps": [0.15, 0.85]
-    "Cannot find product category": [0.25, 0.70]
-  </pre>
+<div class="quadrant-chart-container">
+  <div class="quadrant-chart-grid">
+    <!-- Quadrants -->
+    <div class="quadrant-cell q-top-left">
+      <div class="quadrant-label">Say &amp; Do (Negative)</div>
+    </div>
+    <div class="quadrant-cell q-top-right">
+      <div class="quadrant-label">Say &amp; Do (Positive)</div>
+    </div>
+    <div class="quadrant-cell q-bottom-left">
+      <div class="quadrant-label">Think &amp; Feel (Negative)</div>
+    </div>
+    <div class="quadrant-cell q-bottom-right">
+      <div class="quadrant-label">Think &amp; Feel (Positive)</div>
+    </div>
+
+    <!-- Center Axes -->
+    <div class="axis-x-line"></div>
+    <div class="axis-y-line"></div>
+
+    <!-- Axis Labels -->
+    <div class="axis-label axis-top">External (Say / Do)</div>
+    <div class="axis-label axis-bottom">Internal (Think / Feel)</div>
+    <div class="axis-label axis-left">Negative Experience</div>
+    <div class="axis-label axis-right">Positive Experience</div>
+
+    <!-- Data Points -->
+    <!-- Top Right (Q1) -->
+    <div class="chart-point" style="left: 75%; top: 25%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Filters by price &amp; rating</span>
+    </div>
+    <div class="chart-point" style="left: 82%; top: 15%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Saves cart for later</span>
+    </div>
+    <div class="chart-point" style="left: 68%; top: 35%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Reads reviews first</span>
+    </div>
+
+    <!-- Top Left (Q2) -->
+    <div class="chart-point" style="left: 25%; top: 20%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Abandons cart (many steps)</span>
+    </div>
+    <div class="chart-point" style="left: 32%; top: 32%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Cannot find product category</span>
+    </div>
+
+    <!-- Bottom Left (Q3) -->
+    <div class="chart-point" style="left: 28%; top: 72%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Anxious about hidden fees</span>
+    </div>
+    <div class="chart-point" style="left: 18%; top: 62%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Worried about card safety</span>
+    </div>
+    <div class="chart-point" style="left: 35%; top: 82%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Frustrated by slow loading</span>
+    </div>
+
+    <!-- Bottom Right (Q4) -->
+    <div class="chart-point" style="left: 78%; top: 68%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Feels secure with payments</span>
+    </div>
+    <div class="chart-point" style="left: 68%; top: 78%;">
+      <span class="point-dot"></span>
+      <span class="point-text">Expects fast search</span>
+    </div>
+  </div>
   <div class="diagram-caption">Figure 1.1 — Empathy Map Quadrant Chart: Persona 1 — The Convenience-Seeking Shopper</div>
 </div>
 

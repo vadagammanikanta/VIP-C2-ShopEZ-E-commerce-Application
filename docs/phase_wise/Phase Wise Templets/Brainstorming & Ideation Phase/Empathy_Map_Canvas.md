@@ -21,23 +21,23 @@ This document presents the **Empathy Map Canvas** for the two primary user perso
 
 ```mermaid
 quadrantChart
-    title "Empathy Map - The Convenience-Seeking Shopper"
-    x-axis "Negative Experience" --> "Positive Experience"
-    y-axis "Internal (Think and Feel)" --> "External (Say and Do)"
+    title Empathy Map - Convenience-Seeking Shopper
+    x-axis Negative --> Positive
+    y-axis Internal --> External
     quadrant-1 "Say and Do (Positive)"
-    quadrant-2 "Think and Feel (Positive)"
+    quadrant-2 "Say and Do (Negative)"
     quadrant-3 "Think and Feel (Negative)"
-    quadrant-4 "Say and Do (Negative)"
-    "Filters by price and rating": [0.80, 0.70]
-    "Saves cart for later purchase": [0.75, 0.80]
-    "Reads product reviews first": [0.85, 0.65]
-    "Feels secure with trusted payments": [0.70, 0.35]
-    "Expects fast, accurate search": [0.65, 0.25]
-    "Anxious about hidden fees": [0.30, 0.20]
-    "Worried about card data safety": [0.25, 0.30]
-    "Frustrated by slow loading": [0.20, 0.75]
-    "Abandons cart if too many steps": [0.15, 0.85]
-    "Cannot find product category": [0.25, 0.70]
+    quadrant-4 "Think and Feel (Positive)"
+    "Filters by price and rating": [0.75, 0.75]
+    "Saves cart for later": [0.80, 0.80]
+    "Reads reviews first": [0.70, 0.70]
+    "Feels secure with payments": [0.75, 0.30]
+    "Expects fast search": [0.70, 0.20]
+    "Anxious about hidden fees": [0.30, 0.25]
+    "Worried about card safety": [0.25, 0.35]
+    "Frustrated by slow loading": [0.35, 0.20]
+    "Abandons cart (many steps)": [0.25, 0.75]
+    "Cannot find product category": [0.30, 0.65]
 ```
 
 ### 2.2 Detailed Dimension Analysis
