@@ -32,3 +32,6 @@ build/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Raw downloads/backups
+MERN Phase Wise/
